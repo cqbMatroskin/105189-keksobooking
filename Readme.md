@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Александр Максименков](https://up.htmlacademy.ru/javascript/8/user/105189).
-* Наставник: `Неизвестно`.
+* Наставник: [Андрей Алексеев](https://htmlacademy.ru/profile/id4596).
 
 ---
 
