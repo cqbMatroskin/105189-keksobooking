@@ -497,6 +497,7 @@ select option:hover {
 }
 
 .dialog {
+    display: none;
     position: absolute;
     top: 70px;
     left: 20px;
