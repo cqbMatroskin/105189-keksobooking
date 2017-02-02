@@ -1,119 +1,135 @@
 'use strict';
-var TokyoMapElement = document.querySelector('.tokyo__pin-map');
-var nodeCollectionPin = TokyoMapElement.children;
-var DialogElement = document.querySelector('.dialog');
-var CloseElement = DialogElement.querySelector('.dialog__close');
-var FormElement = document.querySelector('.notice__form');
-var InputTitleElement = FormElement.querySelector('#title');
-var InputAddressElement = FormElement.querySelector('#address');
-var InputPriceElement = FormElement.querySelector('#price');
-var SubmitBtnElement = document.querySelector('.form__submit');
-var RoomSelectElement = FormElement.querySelector('#room_number');
-var CapacitySelectElement = FormElement.querySelector('#capacity');
+var tokyoMapElement = document.querySelector('.tokyo__pin-map');
+var dialogElement = document.querySelector('.dialog');
+var closeElement = dialogElement.querySelector('.dialog__close');
+var formElement = document.querySelector('.notice__form');
+var inputTitleElement = formElement.querySelector('#title');
+var inputAddressElement = formElement.querySelector('#address');
+var inputPriceElement = formElement.querySelector('#price');
+var submitBtnElement = document.querySelector('.form__submit');
+var roomSelectElement = formElement.querySelector('#room_number');
+var capacitySelectElement = formElement.querySelector('#capacity');
+var timeInSelectElement = formElement.querySelector('#time');
+var timeOutSelectElement = formElement.querySelector('#timeout');
+var typeSelectElement = formElement.querySelector('#type');
+
+var config = {
+  REQUIRED: true,
+  price: {
+    MIN: 1000,
+    MAX: 1000000,
+    PALACE: 10000
+  },
+  title: {
+    MIN_LENGTH: 30,
+    MAX_LENGTH: 100
+  }
+};
+
+var selectConfig = {
+  room: {
+    ONE: 1,
+    TWO: 2,
+    ONE_HUNDRED: 100
+  },
+  guest: {
+    THREE: 3,
+    ZERO: 0
+  }
+};
 
 function completeOnLoad() {
-  addRequire();
-  setTitleValidate();
-  setPriceValidation();
-  validateForm();
+  addValidateAttr();
+  changeCapacitySelect();
+}
+
+function addValidateAttr() {
+  inputTitleElement.required = config.REQUIRED;
+  inputAddressElement.required = config.REQUIRED;
+  inputPriceElement.required = config.REQUIRED;
+  inputTitleElement.minLength = config.title.MIN_LENGTH;
+  inputTitleElement.maxLength = config.title.MAX_LENGTH;
+  inputPriceElement.min = config.price.MIN;
+  inputPriceElement.max = config.price.MAX;
+}
+
+function getClosestElement(element, className) {
+  while (element) {
+    if (element.matches(className)) {
+      return element;
+    } else {
+      element = element.parentElement;
+    }
+  }
+  return null;
 }
 
 function onClickPin(evt) {
   var target = evt.target;
-// Если ссылка на объект на котором произошло событие не имеет класса pin,
-// то ссылкой на объект становится родитель текущей ссылки
-// как только выполнится условие, вызовется функция selectPin в которую
-// мы передаем ссылку на объект
-  while (target !== target.classList.contains('pin')) {
-    if (target.classList.contains('pin')) {
-      selectPin(target);
-      return;
-    }
-    target = target.parentNode;
+  var pin = getClosestElement(target, '.pin');
+  if (pin) {
+    selectPin(pin);
   }
 }
-// Проходим по коллекции дочерних узлов ElemetTokyoMap
-// проверяем есть ли у элемента класс pin--active
-// если есть - удаляем класс.
-function removeClassActive(nodeCollection) {
-  for (var i = 0; i < nodeCollection.length; i++) {
-    if (nodeCollection[i].classList.contains('pin--active')) {
-      nodeCollection[i].classList.remove('pin--active');
-    }
-  }
-}
-// Используем свойство 'children' потому что оно возвращает коллекцию
-// дочерних элементов узла без комментариев и текстовых узлов
+
 function selectPin(target) {
-  removeClassActive(nodeCollectionPin);
+  var pinActive = tokyoMapElement.querySelector('.pin--active');
+  if (pinActive) {
+    pinActive.classList.remove('pin--active');
+  }
   target.classList.add('pin--active');
-  DialogElement.style.display = 'block';
+  dialogElement.classList.remove('invisible');
 }
 
 function closeDialog(evt) {
   evt.preventDefault();
-  DialogElement.style.display = 'none';
-  removeClassActive(nodeCollectionPin);
+  dialogElement.classList.add('invisible');
 }
 
-function synchronizeSelect() {
-  if (RoomSelectElement.value === 'one-room') {
-    CapacitySelectElement.value = 'no-guest';
+function changeCapacitySelect() {
+  if (roomSelectElement.value < selectConfig.room.TWO) {
+    capacitySelectElement.value = selectConfig.guest.ZERO;
   } else {
-    CapacitySelectElement.value = 'three-guests';
+    capacitySelectElement.value = selectConfig.guest.THREE;
   }
 }
 
-function enableForm() {
-  SubmitBtnElement.disabled = false;
-}
-
-function disableForm() {
-  SubmitBtnElement.disabled = true;
-}
-
-function addRequire() {
-  InputTitleElement.required = true;
-  InputAddressElement.required = true;
-  InputPriceElement.required = true;
-}
-
-function setTitleValidate() {
-  InputTitleElement.minLength = 30;
-  InputTitleElement.maxLength = 100;
-}
-
-function setPriceValidation() {
-  InputPriceElement.min = 1000;
-  InputPriceElement.max = 1000000;
-}
-
-function validateForm() {
-  var isValid = true;
-  if (InputTitleElement.value.length < 30) {
-    isValid = false;
-  }
-
-  if (Number(InputPriceElement.value) < Number(InputPriceElement.min)) {
-    isValid = false;
-  }
-
-  if (InputAddressElement.value.length === 0) {
-    isValid = false;
-  }
-
-  if (isValid) {
-    enableForm();
+function changeRoomSelect() {
+  if (capacitySelectElement.value < selectConfig.guest.THREE) {
+    roomSelectElement.value = selectConfig.room.ONE;
   } else {
-    disableForm();
+    roomSelectElement.value = selectConfig.room.TWO;
   }
-  synchronizeSelect();
 }
 
-window.addEventListener('load', completeOnLoad);
-TokyoMapElement.addEventListener('click', onClickPin);
-CloseElement.addEventListener('click', closeDialog);
-FormElement.addEventListener('change', validateForm);
-FormElement.addEventListener('input', validateForm);
-SubmitBtnElement.addEventListener('click', validateForm);
-synchronizeSelect();
+function synchronizeSelectTime(evt) {
+  for (var i = 0; i < timeInSelectElement.length; i++) {
+    if (evt.target === timeInSelectElement) {
+      timeOutSelectElement[i].selected = timeInSelectElement[i].selected;
+    } else {
+      timeInSelectElement[i].selected = timeOutSelectElement[i].selected;
+    }
+  }
+}
+
+function changeTypeSelect() {
+  var cheap = inputPriceElement.value < config.price.MIN;
+  var apartment = inputPriceElement.value >= config.price.MIN && inputPriceElement.value < config.price.PALACE;
+  if (cheap) {
+    typeSelectElement[1].selected = true;
+  } else if (apartment) {
+    typeSelectElement[0].selected = true;
+  } else {
+    typeSelectElement[2].selected = true;
+  }
+}
+
+completeOnLoad();
+tokyoMapElement.addEventListener('click', onClickPin);
+closeElement.addEventListener('click', closeDialog);
+timeInSelectElement.addEventListener('change', synchronizeSelectTime);
+timeOutSelectElement.addEventListener('change', synchronizeSelectTime);
+roomSelectElement.addEventListener('change', changeCapacitySelect);
+capacitySelectElement.addEventListener('change', changeRoomSelect);
+inputPriceElement.addEventListener('input', changeTypeSelect);
+
