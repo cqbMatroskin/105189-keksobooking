@@ -6,7 +6,6 @@ var formElement = document.querySelector('.notice__form');
 var inputTitleElement = formElement.querySelector('#title');
 var inputAddressElement = formElement.querySelector('#address');
 var inputPriceElement = formElement.querySelector('#price');
-var submitBtnElement = document.querySelector('.form__submit');
 var roomSelectElement = formElement.querySelector('#room_number');
 var capacitySelectElement = formElement.querySelector('#capacity');
 var timeInSelectElement = formElement.querySelector('#time');
