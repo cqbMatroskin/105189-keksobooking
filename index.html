@@ -71,7 +71,7 @@
       <div class="pin" style="left: 400px;top: 400px"><img src="img/avatars/simpson.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
       <div class="pin"><img src="img/avatars/default.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
     </div>
-    <div class="dialog">
+    <div class="dialog invisible">
       <div class="dialog__title"><img src="img/avatars/avatar.png" alt="Avatar" width="70" height="70">
         <a href="#" class="dialog__close"><img src="img/close.svg" alt="close" width="22" height="22"></a>
       </div>
@@ -140,16 +140,16 @@
             <div class="form__element">
               <label for="room_number">Кол-во комнат</label>
               <select id="room_number">
-                <option value="one-room" selected>1 комната</option>
-                <option value="two-rooms">2 комнаты</option>
-                <option value="more-rooms">100 комнат</option>
+                <option value="1" selected>1 комната</option>
+                <option value="2">2 комнаты</option>
+                <option value="100">100 комнат</option>
               </select>
             </div>
             <div class="form__element">
               <label for="capacity">Количество мест</label>
               <select id="capacity">
-                <option value="three-guests" selected>для 3 гостей</option>
-                <option value="no-guest">не для гостей</option>
+                <option value="3" selected>для 3 гостей</option>
+                <option value="0">не для гостей</option>
               </select>
             </div>
           </div>
@@ -167,17 +167,17 @@
             <div class="form__element">
               <label for="time">Время заезда и выезда</label>
               <select id="time">
-                <option selected>После 12</option>
-                <option>После 13</option>
-                <option>После 14</option>
+                <option value="12" selected>После 12</option>
+                <option value="13">После 13</option>
+                <option value="14">После 14</option>
               </select>
             </div>
             <div class="form__element">
               <label for="timeout">&nbsp;</label>
               <select id="timeout" title="Time to go out">
-                <option selected>Выезд до 12</option>
-                <option>Выезд до 13</option>
-                <option>Выезд до 14</option>
+                <option value="12" selected>Выезд до 12</option>
+                <option value="13">Выезд до 13</option>
+                <option value="14">Выезд до 14</option>
               </select>
             </div>
           </div>
