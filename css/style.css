@@ -497,7 +497,6 @@ select option:hover {
 }
 
 .dialog {
-    display: none;
     position: absolute;
     top: 70px;
     left: 20px;
@@ -651,4 +650,8 @@ select option:hover {
 
 .rounded {
     border-radius: 50%;
+}
+
+.invisible {
+  display: none;
 }
