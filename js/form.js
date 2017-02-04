@@ -1,4 +1,8 @@
 'use strict';
+
+var CLASS_NAME_INVISIBLE = 'invisible';
+var CLASS_NAME_PIN_ACTIVE = 'pin--active';
+
 var tokyoMapElement = document.querySelector('.tokyo__pin-map');
 var dialogElement = document.querySelector('.dialog');
 var closeElement = dialogElement.querySelector('.dialog__close');
@@ -11,10 +15,14 @@ var capacitySelectElement = formElement.querySelector('#capacity');
 var timeInSelectElement = formElement.querySelector('#time');
 var timeOutSelectElement = formElement.querySelector('#timeout');
 var typeSelectElement = formElement.querySelector('#type');
+var pinActive = tokyoMapElement.querySelector('.pin--active');
+var submitBtn = document.querySelector('.form__submit');
 
+/** объект с парметрами для полей */
 var config = {
   REQUIRED: true,
   price: {
+    ZERO: 0,
     MIN: 1000,
     MAX: 1000000,
     PALACE: 10000
@@ -37,11 +45,12 @@ var selectConfig = {
   }
 };
 
-function completeOnLoad() {
-  addValidateAttr();
-  changeCapacitySelect();
-}
+var errorMessages = {
+  MIN_PRICE: 'Цена не может быть меньше ',
+  MAX_PRICE: 'Цена не может быть больше '
+};
 
+/** добавляет аттрибуты всем полям */
 function addValidateAttr() {
   inputTitleElement.required = config.REQUIRED;
   inputAddressElement.required = config.REQUIRED;
@@ -51,6 +60,15 @@ function addValidateAttr() {
   inputPriceElement.min = config.price.MIN;
   inputPriceElement.max = config.price.MAX;
 }
+
+
+/**
+ * если переданный элемент не соответствует классу,
+ * поднимаемся к родителю и проверяем его
+ * @param {object} element
+ * @param {string} className
+ * @returns object or null
+ */
 
 function getClosestElement(element, className) {
   while (element) {
@@ -63,6 +81,11 @@ function getClosestElement(element, className) {
   return null;
 }
 
+/**
+ * передает event.target в getClosestElement
+ * pin является результатом выполнения getClosestElement
+ * @param {MouseEvent} evt
+ */
 function onClickPin(evt) {
   var target = evt.target;
   var pin = getClosestElement(target, '.pin');
@@ -71,21 +94,27 @@ function onClickPin(evt) {
   }
 }
 
+/**
+ * удаляет класс у неактивного элемента
+ * добаляет класс target-у
+ * показывает элемент .dialog
+ * @param {object} target
+ */
 function selectPin(target) {
-  var pinActive = tokyoMapElement.querySelector('.pin--active');
   if (pinActive) {
-    pinActive.classList.remove('pin--active');
+    pinActive.classList.remove(CLASS_NAME_PIN_ACTIVE);
   }
-  target.classList.add('pin--active');
-  dialogElement.classList.remove('invisible');
+  pinActive = target;
+  target.classList.add(CLASS_NAME_PIN_ACTIVE);
+  dialogElement.classList.remove(CLASS_NAME_INVISIBLE);
 }
 
 function closeDialog(evt) {
   evt.preventDefault();
-  dialogElement.classList.add('invisible');
+  dialogElement.classList.add(CLASS_NAME_INVISIBLE);
 }
 
-function changeCapacitySelect() {
+function changeSelectCapacity() {
   if (roomSelectElement.value < selectConfig.room.TWO) {
     capacitySelectElement.value = selectConfig.guest.ZERO;
   } else {
@@ -93,7 +122,7 @@ function changeCapacitySelect() {
   }
 }
 
-function changeRoomSelect() {
+function changeSelectRoom() {
   if (capacitySelectElement.value < selectConfig.guest.THREE) {
     roomSelectElement.value = selectConfig.room.ONE;
   } else {
@@ -102,33 +131,44 @@ function changeRoomSelect() {
 }
 
 function synchronizeSelectTime(evt) {
-  for (var i = 0; i < timeInSelectElement.length; i++) {
-    if (evt.target === timeInSelectElement) {
-      timeOutSelectElement[i].selected = timeInSelectElement[i].selected;
-    } else {
-      timeInSelectElement[i].selected = timeOutSelectElement[i].selected;
-    }
+  if (evt.target === timeInSelectElement) {
+    timeOutSelectElement.value = evt.target.value;
+  } else {
+    timeInSelectElement.value = evt.target.value;
   }
 }
 
 function changeTypeSelect() {
-  var cheap = inputPriceElement.value < config.price.MIN;
-  var apartment = inputPriceElement.value >= config.price.MIN && inputPriceElement.value < config.price.PALACE;
-  if (cheap) {
-    typeSelectElement[1].selected = true;
-  } else if (apartment) {
-    typeSelectElement[0].selected = true;
+  if (typeSelectElement[0].selected) {
+    inputPriceElement.min = config.price.MIN;
+  } else if (typeSelectElement[1].selected) {
+    inputPriceElement.min = config.price.ZERO;
   } else {
-    typeSelectElement[2].selected = true;
+    inputPriceElement.min = config.price.PALACE;
+  }
+  inputPriceElement.value = inputPriceElement.min;
+}
+
+/** кастомное сообщение для валидации цены за жилье */
+function validateInputPrice() {
+  if (!inputPriceElement.validity.valid) {
+    if (inputPriceElement.validity.rangeUnderflow) {
+      inputPriceElement.setCustomValidity(errorMessages.MIN_PRICE + inputPriceElement.min);
+    }
+    if (inputPriceElement.validity.rangeOverflow) {
+      inputPriceElement.setCustomValidity(errorMessages.MAX_PRICE + config.price.MAX);
+    }
   }
 }
 
-completeOnLoad();
+addValidateAttr();
+changeSelectCapacity();
 tokyoMapElement.addEventListener('click', onClickPin);
 closeElement.addEventListener('click', closeDialog);
 timeInSelectElement.addEventListener('change', synchronizeSelectTime);
 timeOutSelectElement.addEventListener('change', synchronizeSelectTime);
-roomSelectElement.addEventListener('change', changeCapacitySelect);
-capacitySelectElement.addEventListener('change', changeRoomSelect);
-inputPriceElement.addEventListener('input', changeTypeSelect);
-
+roomSelectElement.addEventListener('change', changeSelectCapacity);
+capacitySelectElement.addEventListener('change', changeSelectRoom);
+typeSelectElement.addEventListener('change', changeTypeSelect);
+submitBtn.addEventListener('click', validateInputPrice);
+submitBtn.addEventListener('submit', validateInputPrice);
