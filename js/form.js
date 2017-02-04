@@ -61,15 +61,13 @@ function addValidateAttr() {
   inputPriceElement.max = config.price.MAX;
 }
 
-
 /**
  * если переданный элемент не соответствует классу,
  * поднимаемся к родителю и проверяем его
- * @param {object} element
+ * @param {Element} element
  * @param {string} className
- * @returns object or null
+ * @return {Element|null}
  */
-
 function getClosestElement(element, className) {
   while (element) {
     if (element.matches(className)) {
