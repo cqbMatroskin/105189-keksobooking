@@ -1,8 +1,5 @@
 'use strict';
 
-var CLASS_NAME_INVISIBLE = 'invisible';
-var CLASS_NAME_PIN_ACTIVE = 'pin--active';
-
 var tokyoMapElement = document.querySelector('.tokyo__pin-map');
 var dialogElement = document.querySelector('.dialog');
 var closeElement = dialogElement.querySelector('.dialog__close');
@@ -16,24 +13,42 @@ var timeInSelectElement = formElement.querySelector('#time');
 var timeOutSelectElement = formElement.querySelector('#timeout');
 var typeSelectElement = formElement.querySelector('#type');
 var pinActive = tokyoMapElement.querySelector('.pin--active');
-var submitBtn = document.querySelector('.form__submit');
 
-/** объект с парметрами для полей */
-var config = {
-  REQUIRED: true,
-  price: {
-    ZERO: 0,
-    MIN: 1000,
-    MAX: 1000000,
-    PALACE: 10000
+/** массив объектов с парметрами для полей */
+var config = [
+  {
+    element: inputTitleElement,
+    attr: {
+      required: true
+    }
   },
-  title: {
-    MIN_LENGTH: 30,
-    MAX_LENGTH: 100
+  {
+    element: inputPriceElement,
+    attr: {
+      required: true,
+      min: 1000,
+      max: 1000000,
+
+    }
+  },
+  {
+    element: inputAddressElement,
+    attr: {
+      required: true
+    }
   }
+];
+
+/**
+ * @enum {number}
+ */
+var PriceValue = {
+  ZERO: 0,
+  MIN: 1000,
+  PALACE: 10000,
 };
 
-var selectConfig = {
+var SelectConfig = {
   room: {
     ONE: 1,
     TWO: 2,
@@ -42,31 +57,40 @@ var selectConfig = {
   guest: {
     THREE: 3,
     ZERO: 0
+  },
+  typeHousing: {
+    apartment: 'apartment',
+    hovel: 'hovel',
+    palace: 'palace'
   }
 };
 
-var errorMessages = {
-  MIN_PRICE: 'Цена не может быть меньше ',
-  MAX_PRICE: 'Цена не может быть больше '
+/**
+ * @enum {Object<string>}
+ */
+var ClassList = {
+  CLASS_NAME_INVISIBLE: 'inviCible',
+  CLASS_NAME_PIN_ACTIVE: 'pin--active'
 };
 
-/** добавляет аттрибуты всем полям */
-function addValidateAttr() {
-  inputTitleElement.required = config.REQUIRED;
-  inputAddressElement.required = config.REQUIRED;
-  inputPriceElement.required = config.REQUIRED;
-  inputTitleElement.minLength = config.title.MIN_LENGTH;
-  inputTitleElement.maxLength = config.title.MAX_LENGTH;
-  inputPriceElement.min = config.price.MIN;
-  inputPriceElement.max = config.price.MAX;
-}
+/**
+ * @enum {string}
+ */
+var errorMessages = {
+  MIN_PRICE: 'Цена не может быть меньше ',
+  MAX_PRICE: 'Цена не может быть больше ',
+  MIN_LENGTH: 'Длина заголовка не может быть меньше ',
+  MAX_LENGTH: 'Длина заголовка не может быть больше ',
+  CURRENT_LENGTH: 'Текущая длина: ',
+  SYMBOLS: ' символов.'
+};
 
 /**
  * если переданный элемент не соответствует классу,
  * поднимаемся к родителю и проверяем его
- * @param {Element} element
+ * @param {HTMLDivElement} element
  * @param {string} className
- * @return {Element|null}
+ * @return {HTMLDivElement|null}
  */
 function getClosestElement(element, className) {
   while (element) {
@@ -93,80 +117,111 @@ function onClickPin(evt) {
 }
 
 /**
+ * добавляет аттрибуты всем полям заданным в массиве
+ * @param {Array} arrConfig
+ */
+function arrToValidate(arrConfig) {
+  var fieldElement;
+  var elementAttr;
+  for (var i = 0; i < arrConfig.length; i++) {
+    fieldElement = arrConfig[i].element;
+    elementAttr = arrConfig[i].attr;
+    for (var key in elementAttr) {
+      if (elementAttr.hasOwnProperty(key)) {
+        fieldElement[key] = elementAttr[key];
+      }
+    }
+  }
+}
+
+/**
  * удаляет класс у неактивного элемента
  * добаляет класс target-у
  * показывает элемент .dialog
- * @param {object} target
+ * @param {HTMLDivElement} target
  */
 function selectPin(target) {
-  if (pinActive) {
-    pinActive.classList.remove(CLASS_NAME_PIN_ACTIVE);
+  if (target.classList.contains(ClassList.CLASS_NAME_PIN_ACTIVE)) {
+    return;
+  } else if (pinActive) {
+    pinActive.classList.remove(ClassList.CLASS_NAME_PIN_ACTIVE);
   }
   pinActive = target;
-  target.classList.add(CLASS_NAME_PIN_ACTIVE);
-  dialogElement.classList.remove(CLASS_NAME_INVISIBLE);
+  target.classList.add(ClassList.CLASS_NAME_PIN_ACTIVE);
+  dialogElement.classList.remove(ClassList.CLASS_NAME_INVISIBLE);
 }
 
+/**
+ * закрывает окно .dialog
+ * @param {MouseEvent} evt
+ */
 function closeDialog(evt) {
   evt.preventDefault();
-  dialogElement.classList.add(CLASS_NAME_INVISIBLE);
+  dialogElement.classList.add(ClassList.CLASS_NAME_INVISIBLE);
 }
 
+/** синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
 function changeSelectCapacity() {
-  if (roomSelectElement.value < selectConfig.room.TWO) {
-    capacitySelectElement.value = selectConfig.guest.ZERO;
+  if (roomSelectElement.value < SelectConfig.room.TWO) {
+    capacitySelectElement.value = SelectConfig.guest.ZERO;
   } else {
-    capacitySelectElement.value = selectConfig.guest.THREE;
+    capacitySelectElement.value = SelectConfig.guest.THREE;
   }
 }
 
 function changeSelectRoom() {
-  if (capacitySelectElement.value < selectConfig.guest.THREE) {
-    roomSelectElement.value = selectConfig.room.ONE;
+  if (capacitySelectElement.value < SelectConfig.guest.THREE) {
+    roomSelectElement.value = SelectConfig.room.ONE;
   } else {
-    roomSelectElement.value = selectConfig.room.TWO;
+    roomSelectElement.value = SelectConfig.room.TWO;
   }
 }
 
+/**
+ * синхронизация полей выбора времени заезда/выезда
+ * @param {MouseEvent} evt
+ */
 function synchronizeSelectTime(evt) {
-  if (evt.target === timeInSelectElement) {
-    timeOutSelectElement.value = evt.target.value;
+  var select;
+  if (evt.target !== timeInSelectElement) {
+    select = timeOutSelectElement;
   } else {
-    timeInSelectElement.value = evt.target.value;
+    select = timeInSelectElement;
   }
+  select.value = evt.target.value;
 }
 
+/** синхронизация поля выбора жилья и цены за ночь */
 function changeTypeSelect() {
-  if (typeSelectElement[0].selected) {
-    inputPriceElement.min = config.price.MIN;
-  } else if (typeSelectElement[1].selected) {
-    inputPriceElement.min = config.price.ZERO;
+  if (typeSelectElement.value === SelectConfig.typeHousing.apartment) {
+    inputPriceElement.min = PriceValue.MIN;
+  } else if (typeSelectElement.value === SelectConfig.typeHousing.hovel) {
+    inputPriceElement.min = PriceValue.ZERO;
   } else {
-    inputPriceElement.min = config.price.PALACE;
+    inputPriceElement.min = PriceValue.PALACE;
   }
   inputPriceElement.value = inputPriceElement.min;
 }
 
-/** кастомное сообщение для валидации цены за жилье */
-function validateInputPrice() {
-  if (!inputPriceElement.validity.valid) {
-    if (inputPriceElement.validity.rangeUnderflow) {
-      inputPriceElement.setCustomValidity(errorMessages.MIN_PRICE + inputPriceElement.min);
-    }
-    if (inputPriceElement.validity.rangeOverflow) {
-      inputPriceElement.setCustomValidity(errorMessages.MAX_PRICE + config.price.MAX);
-    }
+/** валидация поля #title */
+function validateInputTitle() {
+  if (inputTitleElement.value.length < config.title.MIN_LENGTH) {
+    inputTitleElement.setCustomValidity(errorMessages.MIN_LENGTH + config.title.MIN_LENGTH + errorMessages.SYMBOLS + errorMessages.CURRENT_LENGTH + inputTitleElement.value.length);
+  } else if (inputTitleElement.value.length > config.title.MAX_LENGTH) {
+    inputTitleElement.setCustomValidity(errorMessages.MAX_LENGTH + config.title.MAX_LENGTH + errorMessages.SYMBOLS + errorMessages.CURRENT_LENGTH + inputTitleElement.value.length);
+  } else {
+    inputTitleElement.setCustomValidity('');
   }
 }
 
-addValidateAttr();
+arrToValidate(config);
 changeSelectCapacity();
+changeTypeSelect();
 tokyoMapElement.addEventListener('click', onClickPin);
 closeElement.addEventListener('click', closeDialog);
 timeInSelectElement.addEventListener('change', synchronizeSelectTime);
 timeOutSelectElement.addEventListener('change', synchronizeSelectTime);
 roomSelectElement.addEventListener('change', changeSelectCapacity);
+inputTitleElement.addEventListener('input', validateInputTitle);
 capacitySelectElement.addEventListener('change', changeSelectRoom);
 typeSelectElement.addEventListener('change', changeTypeSelect);
-submitBtn.addEventListener('click', validateInputPrice);
-submitBtn.addEventListener('submit', validateInputPrice);
