@@ -183,7 +183,7 @@ function changeSelectRoom() {
  */
 function synchronizeSelectTime(evt) {
   var select;
-  if (evt.target !== timeInSelectElement) {
+  if (evt.target === timeInSelectElement) {
     select = timeOutSelectElement;
   } else {
     select = timeInSelectElement;
