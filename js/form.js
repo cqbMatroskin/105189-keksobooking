@@ -69,7 +69,7 @@ var SelectConfig = {
  * @enum {Object<string>}
  */
 var ClassList = {
-  CLASS_NAME_INVISIBLE: 'inviCible',
+  CLASS_NAME_INVISIBLE: 'invisible',
   CLASS_NAME_PIN_ACTIVE: 'pin--active'
 };
 
