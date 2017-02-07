@@ -48,6 +48,11 @@ var PriceValue = {
   PALACE: 10000,
 };
 
+var TitleLength = {
+  MIN_LENGTH: 30,
+  MAX_LENGTH: 100
+};
+
 var SelectConfig = {
   room: {
     ONE: 1,
@@ -108,7 +113,7 @@ function getClosestElement(element, className) {
  * pin является результатом выполнения getClosestElement
  * @param {MouseEvent} evt
  */
-function onClickPin(evt) {
+function clickPinHandler(evt) {
   var target = evt.target;
   var pin = getClosestElement(target, '.pin');
   if (pin) {
@@ -155,13 +160,13 @@ function selectPin(target) {
  * закрывает окно .dialog
  * @param {MouseEvent} evt
  */
-function closeDialog(evt) {
+function closeDialogHandler(evt) {
   evt.preventDefault();
   dialogElement.classList.add(ClassList.CLASS_NAME_INVISIBLE);
 }
 
 /** синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
-function changeSelectCapacity() {
+function changeSelectCapacityHandler() {
   if (roomSelectElement.value < SelectConfig.room.TWO) {
     capacitySelectElement.value = SelectConfig.guest.ZERO;
   } else {
@@ -169,7 +174,7 @@ function changeSelectCapacity() {
   }
 }
 
-function changeSelectRoom() {
+function changeSelectRoomHandler() {
   if (capacitySelectElement.value < SelectConfig.guest.THREE) {
     roomSelectElement.value = SelectConfig.room.ONE;
   } else {
@@ -181,18 +186,18 @@ function changeSelectRoom() {
  * синхронизация полей выбора времени заезда/выезда
  * @param {MouseEvent} evt
  */
-function synchronizeSelectTime(evt) {
+function synchronizeSelectTimeHandler(evt) {
   var select;
-  if (evt.target === timeInSelectElement) {
-    select = timeOutSelectElement;
-  } else {
+  if (evt.target !== timeInSelectElement) {
     select = timeInSelectElement;
+  } else {
+    select = timeOutSelectElement;
   }
   select.value = evt.target.value;
 }
 
 /** синхронизация поля выбора жилья и цены за ночь */
-function changeTypeSelect() {
+function changeTypeSelectHandler() {
   if (typeSelectElement.value === SelectConfig.typeHousing.apartment) {
     inputPriceElement.min = PriceValue.MIN;
   } else if (typeSelectElement.value === SelectConfig.typeHousing.hovel) {
@@ -200,28 +205,28 @@ function changeTypeSelect() {
   } else {
     inputPriceElement.min = PriceValue.PALACE;
   }
-  inputPriceElement.value = inputPriceElement.min;
 }
 
 /** валидация поля #title */
-function validateInputTitle() {
-  if (inputTitleElement.value.length < config.title.MIN_LENGTH) {
-    inputTitleElement.setCustomValidity(errorMessages.MIN_LENGTH + config.title.MIN_LENGTH + errorMessages.SYMBOLS + errorMessages.CURRENT_LENGTH + inputTitleElement.value.length);
-  } else if (inputTitleElement.value.length > config.title.MAX_LENGTH) {
-    inputTitleElement.setCustomValidity(errorMessages.MAX_LENGTH + config.title.MAX_LENGTH + errorMessages.SYMBOLS + errorMessages.CURRENT_LENGTH + inputTitleElement.value.length);
+function validateInputTitleHandler() {
+  if (inputTitleElement.value.length < TitleLength.MIN_LENGTH) {
+    inputTitleElement.setCustomValidity(errorMessages.MIN_LENGTH + TitleLength.MIN_LENGTH + errorMessages.SYMBOLS + errorMessages.CURRENT_LENGTH + inputTitleElement.value.length);
+  } else if (inputTitleElement.value.length > TitleLength.MAX_LENGTH) {
+    inputTitleElement.setCustomValidity(errorMessages.MAX_LENGTH + TitleLength.MAX_LENGTH + errorMessages.SYMBOLS + errorMessages.CURRENT_LENGTH + inputTitleElement.value.length);
   } else {
     inputTitleElement.setCustomValidity('');
   }
 }
 
 arrToValidate(config);
-changeSelectCapacity();
-changeTypeSelect();
-tokyoMapElement.addEventListener('click', onClickPin);
-closeElement.addEventListener('click', closeDialog);
-timeInSelectElement.addEventListener('change', synchronizeSelectTime);
-timeOutSelectElement.addEventListener('change', synchronizeSelectTime);
-roomSelectElement.addEventListener('change', changeSelectCapacity);
-inputTitleElement.addEventListener('input', validateInputTitle);
-capacitySelectElement.addEventListener('change', changeSelectRoom);
-typeSelectElement.addEventListener('change', changeTypeSelect);
+changeSelectCapacityHandler();
+changeTypeSelectHandler();
+validateInputTitleHandler();
+tokyoMapElement.addEventListener('click', clickPinHandler);
+closeElement.addEventListener('click', closeDialogHandler);
+timeInSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
+timeOutSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
+roomSelectElement.addEventListener('change', changeSelectCapacityHandler);
+inputTitleElement.addEventListener('input', validateInputTitleHandler);
+capacitySelectElement.addEventListener('change', changeSelectRoomHandler);
+typeSelectElement.addEventListener('change', changeTypeSelectHandler);
