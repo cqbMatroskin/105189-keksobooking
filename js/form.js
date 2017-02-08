@@ -198,7 +198,7 @@ function changeTypeSelectHandler() {
 /** валидация поля #title */
 function validateInputTitleHandler() {
   if (inputTitleElement.value.length < TitleLength.MIN_LENGTH) {
-    inputTitleElement.setCustomValidity(getCustomErrorMessage('Количество символов не может быть меньше ') + getCustomErrorMessage(' Текущая длина ', inputTitleElement.value.length));
+    inputTitleElement.setCustomValidity(getMinLengthMessage(TitleLength.MIN_LENGTH, inputTitleElement.value.length));
   } else {
     inputTitleElement.setCustomValidity('');
   }
@@ -206,16 +206,12 @@ function validateInputTitleHandler() {
 
 /**
  * функция вывода кастомной ошибки
- * @param {any} errorText
- * @param {any} number
+ * @param {number} number
+ * @param {number} length
  * @return {string|number}
  */
-function getCustomErrorMessage(errorText, number) {
-  if (!number) {
-    return errorText;
-  } else {
-    return errorText + number + '.';
-  }
+function getMinLengthMessage(number, length) {
+  return 'Количество символов не может быть меньше ' + number + '.' + ' Текущая длина ' + length;
 }
 
 arrToValidate(config);
