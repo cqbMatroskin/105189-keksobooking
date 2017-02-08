@@ -208,7 +208,7 @@ function validateInputTitleHandler() {
  * функция вывода кастомной ошибки
  * @param {number} number
  * @param {number} length
- * @return {string|number}
+ * @return {string}
  */
 function getMinLengthMessage(number, length) {
   return 'Количество символов не может быть меньше ' + number + '.' + ' Текущая длина ' + length;
