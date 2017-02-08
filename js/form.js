@@ -19,7 +19,8 @@ var config = [
   {
     element: inputTitleElement,
     attr: {
-      required: true
+      required: true,
+      maxLength: 100
     }
   },
   {
@@ -50,7 +51,6 @@ var PriceValue = {
 
 var TitleLength = {
   MIN_LENGTH: 30,
-  MAX_LENGTH: 100
 };
 
 var SelectConfig = {
@@ -85,7 +85,6 @@ var errorMessages = {
   MIN_PRICE: 'Цена не может быть меньше ',
   MAX_PRICE: 'Цена не может быть больше ',
   MIN_LENGTH: 'Длина заголовка не может быть меньше ',
-  MAX_LENGTH: 'Длина заголовка не может быть больше ',
   CURRENT_LENGTH: 'Текущая длина: ',
   SYMBOLS: ' символов.'
 };
@@ -188,7 +187,7 @@ function changeSelectRoomHandler() {
  */
 function synchronizeSelectTimeHandler(evt) {
   var select;
-  if (evt.target !== timeInSelectElement) {
+  if (evt.target === timeInSelectElement) {
     select = timeInSelectElement;
   } else {
     select = timeOutSelectElement;
@@ -211,8 +210,6 @@ function changeTypeSelectHandler() {
 function validateInputTitleHandler() {
   if (inputTitleElement.value.length < TitleLength.MIN_LENGTH) {
     inputTitleElement.setCustomValidity(errorMessages.MIN_LENGTH + TitleLength.MIN_LENGTH + errorMessages.SYMBOLS + errorMessages.CURRENT_LENGTH + inputTitleElement.value.length);
-  } else if (inputTitleElement.value.length > TitleLength.MAX_LENGTH) {
-    inputTitleElement.setCustomValidity(errorMessages.MAX_LENGTH + TitleLength.MAX_LENGTH + errorMessages.SYMBOLS + errorMessages.CURRENT_LENGTH + inputTitleElement.value.length);
   } else {
     inputTitleElement.setCustomValidity('');
   }
