@@ -79,17 +79,6 @@ var ClassList = {
 };
 
 /**
- * @enum {string}
- */
-var errorMessages = {
-  MIN_PRICE: 'Цена не может быть меньше ',
-  MAX_PRICE: 'Цена не может быть больше ',
-  MIN_LENGTH: 'Длина заголовка не может быть меньше ',
-  CURRENT_LENGTH: 'Текущая длина: ',
-  SYMBOLS: ' символов.'
-};
-
-/**
  * если переданный элемент не соответствует классу,
  * поднимаемся к родителю и проверяем его
  * @param {HTMLDivElement} element
@@ -209,9 +198,23 @@ function changeTypeSelectHandler() {
 /** валидация поля #title */
 function validateInputTitleHandler() {
   if (inputTitleElement.value.length < TitleLength.MIN_LENGTH) {
-    inputTitleElement.setCustomValidity(errorMessages.MIN_LENGTH + TitleLength.MIN_LENGTH + errorMessages.SYMBOLS + errorMessages.CURRENT_LENGTH + inputTitleElement.value.length);
+    inputTitleElement.setCustomValidity(getCustomErrorMessage('Количество символов не может быть меньше ') + getCustomErrorMessage(' Текущая длина ', inputTitleElement.value.length));
   } else {
     inputTitleElement.setCustomValidity('');
+  }
+}
+
+/**
+ * функция вывода кастомной ошибки
+ * @param {any} errorText
+ * @param {any} number
+ * @return {string|number}
+ */
+function getCustomErrorMessage(errorText, number) {
+  if (!number) {
+    return errorText;
+  } else {
+    return errorText + number + '.';
   }
 }
 
