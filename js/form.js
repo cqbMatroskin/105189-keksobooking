@@ -3,6 +3,7 @@
 var tokyoMapElement = document.querySelector('.tokyo__pin-map');
 var dialogElement = document.querySelector('.dialog');
 var closeElement = dialogElement.querySelector('.dialog__close');
+var closeElementButton = closeElement.querySelector('.dialog__close img');
 var formElement = document.querySelector('.notice__form');
 var inputTitleElement = formElement.querySelector('#title');
 var inputAddressElement = formElement.querySelector('#address');
@@ -79,35 +80,12 @@ var ClassList = {
 };
 
 /**
- * если переданный элемент не соответствует классу,
- * поднимаемся к родителю и проверяем его
- * @param {HTMLDivElement} element
- * @param {string} className
- * @return {HTMLDivElement|null}
+ * @enum {Object<number>}
  */
-function getClosestElement(element, className) {
-  while (element) {
-    if (element.matches(className)) {
-      return element;
-    } else {
-      element = element.parentElement;
-    }
-  }
-  return null;
-}
-
-/**
- * передает event.target в getClosestElement
- * pin является результатом выполнения getClosestElement
- * @param {MouseEvent} evt
- */
-function clickPinHandler(evt) {
-  var target = evt.target;
-  var pin = getClosestElement(target, '.pin');
-  if (pin) {
-    selectPin(pin);
-  }
-}
+var KeyCodeLib = {
+  ESCAPE: 27,
+  ENTER: 13
+};
 
 /**
  * добавляет аттрибуты всем полям заданным в массиве
@@ -128,6 +106,62 @@ function arrToValidate(arrConfig) {
 }
 
 /**
+ * проверяет совпадает ли evt.keyCode и клавиша переданная вторым аргументом
+ * @param {KeyboardEvent} evt
+ * @param {number} key
+ * @return {boolean}
+ */
+function isActivateEvent(evt, key) {
+  return evt.keyCode && evt.keyCode === key;
+}
+
+/**
+ * handler для клика по пину
+ * @param {MouseEvent} evt
+ */
+function clickPinHandler(evt) {
+  if (getPinElement(evt.target)) {
+    selectPin(getPinElement(evt.target));
+  }
+}
+
+/**
+ * handler для нажатия Enter по пину
+ * @param {KeyboardEvent} evt
+ */
+function keyDownPinHandler(evt) {
+  if (isActivateEvent(evt, KeyCodeLib.ENTER)) {
+    selectPin(getPinElement(evt.target));
+  }
+}
+
+/**
+ * @param {HTMLDivElement|HTMLImageElement} target
+ * @return {HTMLDivElement}
+ */
+function getPinElement(target) {
+  return getClosestElement(target, '.pin');
+}
+
+/**
+ * если переданный элемент не соответствует классу,
+ * поднимаемся к родителю и проверяем его
+ * @param {HTMLDivElement} element
+ * @param {string} className
+ * @return {HTMLDivElement|null}
+ */
+function getClosestElement(element, className) {
+  while (element) {
+    if (element.matches(className)) {
+      return element;
+    } else {
+      element = element.parentElement;
+    }
+  }
+  return null;
+}
+
+/**
  * удаляет класс у неактивного элемента
  * добаляет класс target-у
  * показывает элемент .dialog
@@ -138,10 +172,13 @@ function selectPin(target) {
     return;
   } else if (pinActive) {
     pinActive.classList.remove(ClassList.CLASS_NAME_PIN_ACTIVE);
+    pinActive.setAttribute('aria-checked', false);
   }
   pinActive = target;
   target.classList.add(ClassList.CLASS_NAME_PIN_ACTIVE);
+  pinActive.setAttribute('aria-checked', true);
   dialogElement.classList.remove(ClassList.CLASS_NAME_INVISIBLE);
+  closeElementButton.setAttribute('aria-hidden', false);
 }
 
 /**
@@ -151,6 +188,15 @@ function selectPin(target) {
 function closeDialogHandler(evt) {
   evt.preventDefault();
   dialogElement.classList.add(ClassList.CLASS_NAME_INVISIBLE);
+  closeElementButton.setAttribute('aria-hidden', true);
+}
+
+function keyDownToCloeDialog(evt) {
+  evt.preventDefault();
+  if (isActivateEvent(evt, KeyCodeLib.ENTER)) {
+    dialogElement.classList.add(ClassList.CLASS_NAME_INVISIBLE);
+    closeElementButton.setAttribute('aria-hidden', true);
+  }
 }
 
 /** синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
@@ -219,7 +265,9 @@ changeSelectCapacityHandler();
 changeTypeSelectHandler();
 validateInputTitleHandler();
 tokyoMapElement.addEventListener('click', clickPinHandler);
+tokyoMapElement.addEventListener('keydown', keyDownPinHandler);
 closeElement.addEventListener('click', closeDialogHandler);
+closeElement.addEventListener('keydown', keyDownToCloeDialog);
 timeInSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
 timeOutSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
 roomSelectElement.addEventListener('change', changeSelectCapacityHandler);
