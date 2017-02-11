@@ -14,6 +14,8 @@ var timeInSelectElement = formElement.querySelector('#time');
 var timeOutSelectElement = formElement.querySelector('#timeout');
 var typeSelectElement = formElement.querySelector('#type');
 var pinActive = tokyoMapElement.querySelector('.pin--active');
+var CLASS_NAME_PIN = '.pin';
+var TYPE_CLICK = 'click';
 
 /** массив объектов с парметрами для полей */
 var config = [
@@ -82,7 +84,7 @@ var ClassList = {
 /**
  * @enum {Object<number>}
  */
-var KeyCodeLib = {
+var KeyCode = {
   ESCAPE: 27,
   ENTER: 13
 };
@@ -107,12 +109,14 @@ function arrToValidate(arrConfig) {
 
 /**
  * проверяет совпадает ли evt.keyCode и клавиша переданная вторым аргументом
- * @param {KeyboardEvent} evt
- * @param {number} key
- * @return {boolean}
+ * @param {MouseEvent|KeyboardEvent} evt
  */
-function isActivateEvent(evt, key) {
-  return evt.keyCode && evt.keyCode === key;
+function pinActivateHandler(evt) {
+  if (evt.type === TYPE_CLICK) {
+    clickPinHandler(evt);
+  } else if (evt.keyCode === KeyCode.ENTER) {
+    keyDownPinHandler(evt);
+  }
 }
 
 /**
@@ -120,8 +124,9 @@ function isActivateEvent(evt, key) {
  * @param {MouseEvent} evt
  */
 function clickPinHandler(evt) {
-  if (getPinElement(evt.target)) {
-    selectPin(getPinElement(evt.target));
+  var targetPin = getClosestElement(evt.target, CLASS_NAME_PIN);
+  if (targetPin) {
+    selectPin(targetPin);
   }
 }
 
@@ -130,23 +135,13 @@ function clickPinHandler(evt) {
  * @param {KeyboardEvent} evt
  */
 function keyDownPinHandler(evt) {
-  if (isActivateEvent(evt, KeyCodeLib.ENTER)) {
-    selectPin(getPinElement(evt.target));
-  }
-}
-
-/**
- * @param {HTMLDivElement|HTMLImageElement} target
- * @return {HTMLDivElement}
- */
-function getPinElement(target) {
-  return getClosestElement(target, '.pin');
+  selectPin(getClosestElement(evt.target, CLASS_NAME_PIN));
 }
 
 /**
  * если переданный элемент не соответствует классу,
  * поднимаемся к родителю и проверяем его
- * @param {HTMLDivElement} element
+ * @param {HTMLElement} element
  * @param {string} className
  * @return {HTMLDivElement|null}
  */
@@ -175,27 +170,60 @@ function selectPin(target) {
     pinActive.setAttribute('aria-checked', false);
   }
   pinActive = target;
-  target.classList.add(ClassList.CLASS_NAME_PIN_ACTIVE);
+  pinActive.classList.add(ClassList.CLASS_NAME_PIN_ACTIVE);
   pinActive.setAttribute('aria-checked', true);
+  showDialog();
+}
+
+/**
+ * действия при открытии окна диалога
+ */
+function showDialog() {
   dialogElement.classList.remove(ClassList.CLASS_NAME_INVISIBLE);
-  closeElementButton.setAttribute('aria-hidden', false);
+  dialogElement.setAttribute('aria-hidden', false);
+  closeElement.addEventListener('click', clickToCloseDialogHandler);
+  closeElement.addEventListener('keydown', keyDownToCloseDialog);
+  document.addEventListener('keydown', pressEscHandler);
+}
+
+/**
+ * действия при закрытии окна диалога
+ */
+function closeDialog() {
+  dialogElement.classList.add(ClassList.CLASS_NAME_INVISIBLE);
+  dialogElement.setAttribute('aria-hidden', true);
+  closeElement.removeEventListener('click', clickToCloseDialogHandler);
+  closeElement.removeEventListener('keydown', keyDownToCloseDialog);
+  document.removeEventListener('keydown', pressEscHandler);
 }
 
 /**
  * закрывает окно .dialog
  * @param {MouseEvent} evt
  */
-function closeDialogHandler(evt) {
+function clickToCloseDialogHandler(evt) {
   evt.preventDefault();
-  dialogElement.classList.add(ClassList.CLASS_NAME_INVISIBLE);
-  closeElementButton.setAttribute('aria-hidden', true);
+  closeDialog();
 }
 
-function keyDownToCloeDialog(evt) {
+/**
+ * открывает диалоговое окно при нажатии Enter на .pin
+ * @param {KeyboardEvent} evt
+ */
+function keyDownToCloseDialog(evt) {
   evt.preventDefault();
-  if (isActivateEvent(evt, KeyCodeLib.ENTER)) {
+  if (pinActivateHandler(evt)) {
     dialogElement.classList.add(ClassList.CLASS_NAME_INVISIBLE);
-    closeElementButton.setAttribute('aria-hidden', true);
+  }
+}
+
+/**
+ * закрывает диалоговое окно при нажатии Esc
+ * @param {KeyboardEvent} evt
+ */
+function pressEscHandler(evt) {
+  if (evt.keyCode === KeyCode.ESCAPE) {
+    closeDialog();
   }
 }
 
@@ -208,6 +236,10 @@ function changeSelectCapacityHandler() {
   }
 }
 
+/**
+ * синхронизация селекта выбора комнаты
+ * с селектом количества мест
+ */
 function changeSelectRoomHandler() {
   if (capacitySelectElement.value < SelectConfig.guest.THREE) {
     roomSelectElement.value = SelectConfig.room.ONE;
@@ -264,10 +296,8 @@ arrToValidate(config);
 changeSelectCapacityHandler();
 changeTypeSelectHandler();
 validateInputTitleHandler();
-tokyoMapElement.addEventListener('click', clickPinHandler);
-tokyoMapElement.addEventListener('keydown', keyDownPinHandler);
-closeElement.addEventListener('click', closeDialogHandler);
-closeElement.addEventListener('keydown', keyDownToCloeDialog);
+tokyoMapElement.addEventListener('click', pinActivateHandler);
+tokyoMapElement.addEventListener('keydown', pinActivateHandler);
 timeInSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
 timeOutSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
 roomSelectElement.addEventListener('change', changeSelectCapacityHandler);
