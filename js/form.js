@@ -158,7 +158,7 @@ function getClosestElement(element, className) {
 /**
  * удаляет класс у неактивного элемента
  * добаляет класс target-у
- * показывает элемент .dialog
+ * показывает диалоговое окно
  * @param {HTMLDivElement} target
  */
 function selectPin(target) {
@@ -181,8 +181,7 @@ function showDialog() {
   dialogElement.classList.remove(ClassList.CLASS_NAME_INVISIBLE);
   dialogElement.setAttribute('aria-hidden', false);
   closeElement.addEventListener('click', clickToCloseDialogHandler);
-  closeElement.addEventListener('keydown', keyDownToCloseDialog);
-  document.addEventListener('keydown', pressEscHandler);
+  document.addEventListener('keydown', keyDownToCloseDialog);
 }
 
 /**
@@ -192,12 +191,11 @@ function closeDialog() {
   dialogElement.classList.add(ClassList.CLASS_NAME_INVISIBLE);
   dialogElement.setAttribute('aria-hidden', true);
   closeElement.removeEventListener('click', clickToCloseDialogHandler);
-  closeElement.removeEventListener('keydown', keyDownToCloseDialog);
-  document.removeEventListener('keydown', pressEscHandler);
+  document.removeEventListener('keydown', keyDownToCloseDialog);
 }
 
 /**
- * закрывает окно .dialog
+ * закрывает диалоговое окно по клику
  * @param {MouseEvent} evt
  */
 function clickToCloseDialogHandler(evt) {
@@ -206,21 +204,10 @@ function clickToCloseDialogHandler(evt) {
 }
 
 /**
- * открывает диалоговое окно при нажатии Enter на .pin
- * @param {KeyboardEvent} evt
- */
-function keyDownToCloseDialog(evt) {
-  evt.preventDefault();
-  if (pinActivateHandler(evt)) {
-    dialogElement.classList.add(ClassList.CLASS_NAME_INVISIBLE);
-  }
-}
-
-/**
  * закрывает диалоговое окно при нажатии Esc
  * @param {KeyboardEvent} evt
  */
-function pressEscHandler(evt) {
+function keyDownToCloseDialog(evt) {
   if (evt.keyCode === KeyCode.ESCAPE) {
     closeDialog();
   }
