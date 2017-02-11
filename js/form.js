@@ -3,7 +3,6 @@
 var tokyoMapElement = document.querySelector('.tokyo__pin-map');
 var dialogElement = document.querySelector('.dialog');
 var closeElement = dialogElement.querySelector('.dialog__close');
-var closeElementButton = closeElement.querySelector('.dialog__close img');
 var formElement = document.querySelector('.notice__form');
 var inputTitleElement = formElement.querySelector('#title');
 var inputAddressElement = formElement.querySelector('#address');
