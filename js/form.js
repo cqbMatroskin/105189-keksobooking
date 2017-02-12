@@ -146,16 +146,16 @@ function toggleDialog(flag) {
   dialogElement.classList.toggle(ClassName.INVISIBLE, !flag);
   dialogElement.setAttribute('aria-hidden', !flag);
   if (flag) {
-    closeElement.addEventListener('click', сloseDialogHandler);
+    closeElement.addEventListener('click', closeDialogHandler);
     document.addEventListener('keydown', keyDownToCloseDialog);
   } else {
-    closeElement.removeEventListener('click', сloseDialogHandler);
+    closeElement.removeEventListener('click', closeDialogHandler);
     document.removeEventListener('keydown', keyDownToCloseDialog);
   }
 }
 
 /* закрывает диалоговое окно по клику */
-function сloseDialogHandler(evt) {
+function closeDialogHandler(evt) {
   evt.preventDefault();
   toggleDialog(false);
 }
