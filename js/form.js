@@ -14,6 +14,10 @@ var timeOutSelectElement = formElement.querySelector('#timeout');
 var typeSelectElement = formElement.querySelector('#type');
 var pinActive = tokyoMapElement.querySelector('.pin--active');
 
+var EventType = {
+  CLICK: 'click'
+};
+
 /** массив объектов с парметрами для полей */
 var config = [
   {
@@ -40,9 +44,6 @@ var config = [
   }
 ];
 
-/**
- * @enum {number}
- */
 var PriceValue = {
   ZERO: 0,
   MIN: 1000,
@@ -70,49 +71,18 @@ var SelectConfig = {
   }
 };
 
-/**
- * @enum {Object<string>}
- */
-var ClassList = {
-  CLASS_NAME_INVISIBLE: 'invisible',
-  CLASS_NAME_PIN_ACTIVE: 'pin--active'
+var ClassName = {
+  INVISIBLE: 'invisible',
+  PIN_ACTIVE: 'pin--active',
+  PIN: 'pin'
 };
 
-/**
- * если переданный элемент не соответствует классу,
- * поднимаемся к родителю и проверяем его
- * @param {HTMLDivElement} element
- * @param {string} className
- * @return {HTMLDivElement|null}
- */
-function getClosestElement(element, className) {
-  while (element) {
-    if (element.matches(className)) {
-      return element;
-    } else {
-      element = element.parentElement;
-    }
-  }
-  return null;
-}
+var KeyCode = {
+  ESCAPE: 27,
+  ENTER: 13
+};
 
-/**
- * передает event.target в getClosestElement
- * pin является результатом выполнения getClosestElement
- * @param {MouseEvent} evt
- */
-function clickPinHandler(evt) {
-  var target = evt.target;
-  var pin = getClosestElement(target, '.pin');
-  if (pin) {
-    selectPin(pin);
-  }
-}
-
-/**
- * добавляет аттрибуты всем полям заданным в массиве
- * @param {Array} arrConfig
- */
+/* добавляет аттрибуты всем полям заданным в массиве */
 function arrToValidate(arrConfig) {
   var fieldElement;
   var elementAttr;
@@ -127,33 +97,77 @@ function arrToValidate(arrConfig) {
   }
 }
 
-/**
+/* проверяет совпадает ли evt.keyCode с клавишей Enter */
+function pinActivate(evt) {
+  return evt.keyCode === KeyCode.ENTER || evt.type === EventType.CLICK;
+}
+
+/* вызывает функцию активации по нажатию или клику на .pin */
+function pinHandler(evt) {
+  if (pinActivate(evt)) {
+    selectPin(getClosestElement(evt.target, '.' + ClassName.PIN));
+  }
+}
+
+/*
+ * если переданный элемент не соответствует классу,
+ * поднимаемся к родителю и проверяем его
+ */
+function getClosestElement(element, className) {
+  while (element) {
+    if (element.matches(className)) {
+      return element;
+    } else {
+      element = element.parentElement;
+    }
+  }
+  return null;
+}
+
+/*
  * удаляет класс у неактивного элемента
  * добаляет класс target-у
- * показывает элемент .dialog
- * @param {HTMLDivElement} target
+ * показывает диалоговое окно
  */
 function selectPin(target) {
-  if (target.classList.contains(ClassList.CLASS_NAME_PIN_ACTIVE)) {
+  if (target.classList.contains(ClassName.PIN_ACTIVE)) {
     return;
   } else if (pinActive) {
-    pinActive.classList.remove(ClassList.CLASS_NAME_PIN_ACTIVE);
+    pinActive.classList.remove(ClassName.PIN_ACTIVE);
+    pinActive.setAttribute('aria-checked', false);
   }
   pinActive = target;
-  target.classList.add(ClassList.CLASS_NAME_PIN_ACTIVE);
-  dialogElement.classList.remove(ClassList.CLASS_NAME_INVISIBLE);
+  pinActive.classList.add(ClassName.PIN_ACTIVE);
+  pinActive.setAttribute('aria-checked', true);
+  toggleDialog(true);
 }
 
-/**
- * закрывает окно .dialog
- * @param {MouseEvent} evt
- */
+function toggleDialog(flag) {
+  dialogElement.classList.toggle(ClassName.INVISIBLE, !flag);
+  dialogElement.setAttribute('aria-hidden', !flag);
+  if (flag) {
+    closeElement.addEventListener('click', closeDialogHandler);
+    document.addEventListener('keydown', keyDownToCloseDialog);
+  } else {
+    closeElement.removeEventListener('click', closeDialogHandler);
+    document.removeEventListener('keydown', keyDownToCloseDialog);
+  }
+}
+
+/* закрывает диалоговое окно по клику */
 function closeDialogHandler(evt) {
   evt.preventDefault();
-  dialogElement.classList.add(ClassList.CLASS_NAME_INVISIBLE);
+  toggleDialog(false);
 }
 
-/** синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
+/* закрывает диалоговое окно при нажатии Esc */
+function keyDownToCloseDialog(evt) {
+  if (evt.keyCode === KeyCode.ESCAPE) {
+    toggleDialog(false);
+  }
+}
+
+/* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
 function changeSelectCapacityHandler() {
   if (roomSelectElement.value < SelectConfig.room.TWO) {
     capacitySelectElement.value = SelectConfig.guest.ZERO;
@@ -162,6 +176,7 @@ function changeSelectCapacityHandler() {
   }
 }
 
+/* синхронизация селекта выбора комнаты с селектом количества мест */
 function changeSelectRoomHandler() {
   if (capacitySelectElement.value < SelectConfig.guest.THREE) {
     roomSelectElement.value = SelectConfig.room.ONE;
@@ -170,10 +185,7 @@ function changeSelectRoomHandler() {
   }
 }
 
-/**
- * синхронизация полей выбора времени заезда/выезда
- * @param {MouseEvent} evt
- */
+/* синхронизация полей выбора времени заезда/выезда */
 function synchronizeSelectTimeHandler(evt) {
   var select;
   if (evt.target === timeInSelectElement) {
@@ -184,7 +196,7 @@ function synchronizeSelectTimeHandler(evt) {
   select.value = evt.target.value;
 }
 
-/** синхронизация поля выбора жилья и цены за ночь */
+/* синхронизация поля выбора жилья и цены за ночь */
 function changeTypeSelectHandler() {
   if (typeSelectElement.value === SelectConfig.typeHousing.apartment) {
     inputPriceElement.min = PriceValue.MIN;
@@ -195,7 +207,7 @@ function changeTypeSelectHandler() {
   }
 }
 
-/** валидация поля #title */
+/* валидация поля #title */
 function validateInputTitleHandler() {
   if (inputTitleElement.value.length < TitleLength.MIN_LENGTH) {
     inputTitleElement.setCustomValidity(getMinLengthMessage(TitleLength.MIN_LENGTH, inputTitleElement.value.length));
@@ -204,12 +216,7 @@ function validateInputTitleHandler() {
   }
 }
 
-/**
- * функция вывода кастомной ошибки
- * @param {number} number
- * @param {number} length
- * @return {string}
- */
+/* функция вывода кастомной ошибки */
 function getMinLengthMessage(number, length) {
   return 'Количество символов не может быть меньше ' + number + '.' + ' Текущая длина ' + length;
 }
@@ -218,8 +225,8 @@ arrToValidate(config);
 changeSelectCapacityHandler();
 changeTypeSelectHandler();
 validateInputTitleHandler();
-tokyoMapElement.addEventListener('click', clickPinHandler);
-closeElement.addEventListener('click', closeDialogHandler);
+tokyoMapElement.addEventListener('click', pinHandler);
+tokyoMapElement.addEventListener('keydown', pinHandler);
 timeInSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
 timeOutSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
 roomSelectElement.addEventListener('change', changeSelectCapacityHandler);

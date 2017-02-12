@@ -66,17 +66,17 @@
       </form>
     </div>
     <div class="tokyo__pin-map">
-      <div class="pin  pin__main"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44"></div>
-      <div class="pin  pin--active" style="left: 700px;top: 350px"><img src="img/avatars/avatar.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
-      <div class="pin" style="left: 400px;top: 400px"><img src="img/avatars/simpson.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
-      <div class="pin"><img src="img/avatars/default.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
+      <div class="pin  pin__main" role="radio" aria-checked="false" tabindex="0"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44"></div>
+      <div class="pin  pin--active" role="radio" aria-checked="false" tabindex="0" style="left: 700px;top: 350px"><img src="img/avatars/avatar.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
+      <div class="pin" role="radio" aria-checked="false" tabindex="0" style="left: 400px;top: 400px"><img src="img/avatars/simpson.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
+      <div class="pin" role="radio" aria-checked="false" tabindex="0"><img src="img/avatars/default.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
     </div>
-    <div class="dialog invisible">
+    <div class="dialog invisible" role="dialog" aria-labelledby="lodge__title" aria-describedby="lodge__description" aria-hidden="true">
       <div class="dialog__title"><img src="img/avatars/avatar.png" alt="Avatar" width="70" height="70">
-        <a href="#" class="dialog__close"><img src="img/close.svg" alt="close" width="22" height="22"></a>
+        <a href="#" class="dialog__close"><img src="img/close.svg" alt="close" width="22" height="22" role="button" aria-pressed="false" tabindex="0"></a>
       </div>
       <div class="dialog__panel">
-        <h3 class="lodge__title">Уютное гнездышко для молодоженов</h3>
+        <h3 id="lodge__title" class="lodge__title">Уютное гнездышко для молодоженов</h3>
         <p class="lodge__address">102-0082 Tōkyō-to, Chiyoda-ku, Ichibanchō, 14−3</p>
         <h3 class="lodge__price">5200&#x20bd;/ночь</h3>
         <h4 class="lodge__type">Квартира</h4>
@@ -90,7 +90,7 @@
           <span class="feature__image  feature__image--elevator"></span>
           <span class="feature__image  feature__image--conditioner"></span>
         </div>
-        <p class="lodge__description">Великолепная квартира-студия в центре Токио. Подходит как туристам, там и
+        <p id="lodge__description" class="lodge__description">Великолепная квартира-студия в центре Токио. Подходит как туристам, там и
           бизнесменам. Квартира полностью укомплектована и имеет свежий ремонт.</p>
         <div class="lodge__photos">
           <img src="http://placehold.it/52x42" alt="Lodge photo" width="52" height="42">
