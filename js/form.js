@@ -14,9 +14,6 @@ var timeOutSelectElement = formElement.querySelector('#timeout');
 var typeSelectElement = formElement.querySelector('#type');
 var pinActive = tokyoMapElement.querySelector('.pin--active');
 
-/**
- * @enum {string}
- */
 var EventType = {
   CLICK: 'click'
 };
@@ -47,9 +44,6 @@ var config = [
   }
 ];
 
-/**
- * @enum {number}
- */
 var PriceValue = {
   ZERO: 0,
   MIN: 1000,
@@ -77,27 +71,18 @@ var SelectConfig = {
   }
 };
 
-/**
- * @enum {Object<string>}
- */
 var ClassName = {
   INVISIBLE: 'invisible',
   PIN_ACTIVE: 'pin--active',
-  PIN: '.pin'
+  PIN: 'pin'
 };
 
-/**
- * @enum {Object<number>}
- */
 var KeyCode = {
   ESCAPE: 27,
   ENTER: 13
 };
 
-/**
- * добавляет аттрибуты всем полям заданным в массиве
- * @param {Array} arrConfig
- */
+/* добавляет аттрибуты всем полям заданным в массиве */
 function arrToValidate(arrConfig) {
   var fieldElement;
   var elementAttr;
@@ -112,35 +97,21 @@ function arrToValidate(arrConfig) {
   }
 }
 
-/**
- * проверяет совпадает ли evt.keyCode с клавишей Enter
- * @param {KeyboardEvent} evt
- * @return {boolean}
- */
-function pinActivateHandler(evt) {
-  if (evt.keyCode === KeyCode.ENTER) {
-    return true;
-  } else {
-    return false;
-  }
+/* проверяет совпадает ли evt.keyCode с клавишей Enter */
+function pinActivate(evt) {
+  return evt.keyCode === KeyCode.ENTER || evt.type === EventType.CLICK;
 }
 
-/**
- * вызывает функцию активации по нажатию или клику на .pin
- * @param {KeyboardEvent|MouseEvent} evt
- */
+/* вызывает функцию активации по нажатию или клику на .pin */
 function pinHandler(evt) {
-  if (pinActivateHandler(evt) || evt.type === EventType.CLICK) {
-    selectPin(getClosestElement(evt.target, ClassName.PIN));
+  if (pinActivate(evt)) {
+    selectPin(getClosestElement(evt.target, '.' + ClassName.PIN));
   }
 }
 
-/**
+/*
  * если переданный элемент не соответствует классу,
  * поднимаемся к родителю и проверяем его
- * @param {HTMLElement} element
- * @param {string} className
- * @return {HTMLElement|null}
  */
 function getClosestElement(element, className) {
   while (element) {
@@ -153,11 +124,10 @@ function getClosestElement(element, className) {
   return null;
 }
 
-/**
+/*
  * удаляет класс у неактивного элемента
  * добаляет класс target-у
  * показывает диалоговое окно
- * @param {HTMLElement} target
  */
 function selectPin(target) {
   if (target.classList.contains(ClassName.PIN_ACTIVE)) {
@@ -169,43 +139,35 @@ function selectPin(target) {
   pinActive = target;
   pinActive.classList.add(ClassName.PIN_ACTIVE);
   pinActive.setAttribute('aria-checked', true);
-  isShowDialog(true);
+  toggleDialog(true);
 }
 
-function isShowDialog(flag) {
+function toggleDialog(flag) {
+  dialogElement.classList.toggle(ClassName.INVISIBLE, !flag);
+  dialogElement.setAttribute('aria-hidden', !flag);
   if (flag) {
-    dialogElement.classList.remove(ClassName.INVISIBLE);
-    dialogElement.setAttribute('aria-hidden', false);
     closeElement.addEventListener('click', сloseDialogHandler);
     document.addEventListener('keydown', keyDownToCloseDialog);
   } else {
-    dialogElement.classList.add(ClassName.INVISIBLE);
-    dialogElement.setAttribute('aria-hidden', true);
     closeElement.removeEventListener('click', сloseDialogHandler);
     document.removeEventListener('keydown', keyDownToCloseDialog);
   }
 }
 
-/**
- * закрывает диалоговое окно по клику
- * @param {MouseEvent} evt
- */
+/* закрывает диалоговое окно по клику */
 function сloseDialogHandler(evt) {
   evt.preventDefault();
-  isShowDialog(false);
+  toggleDialog(false);
 }
 
-/**
- * закрывает диалоговое окно при нажатии Esc
- * @param {KeyboardEvent} evt
- */
+/* закрывает диалоговое окно при нажатии Esc */
 function keyDownToCloseDialog(evt) {
   if (evt.keyCode === KeyCode.ESCAPE) {
-    isShowDialog(false);
+    toggleDialog(false);
   }
 }
 
-/** синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
+/* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
 function changeSelectCapacityHandler() {
   if (roomSelectElement.value < SelectConfig.room.TWO) {
     capacitySelectElement.value = SelectConfig.guest.ZERO;
@@ -214,10 +176,7 @@ function changeSelectCapacityHandler() {
   }
 }
 
-/**
- * синхронизация селекта выбора комнаты
- * с селектом количества мест
- */
+/* синхронизация селекта выбора комнаты с селектом количества мест */
 function changeSelectRoomHandler() {
   if (capacitySelectElement.value < SelectConfig.guest.THREE) {
     roomSelectElement.value = SelectConfig.room.ONE;
@@ -226,10 +185,7 @@ function changeSelectRoomHandler() {
   }
 }
 
-/**
- * синхронизация полей выбора времени заезда/выезда
- * @param {MouseEvent} evt
- */
+/* синхронизация полей выбора времени заезда/выезда */
 function synchronizeSelectTimeHandler(evt) {
   var select;
   if (evt.target === timeInSelectElement) {
@@ -240,7 +196,7 @@ function synchronizeSelectTimeHandler(evt) {
   select.value = evt.target.value;
 }
 
-/** синхронизация поля выбора жилья и цены за ночь */
+/* синхронизация поля выбора жилья и цены за ночь */
 function changeTypeSelectHandler() {
   if (typeSelectElement.value === SelectConfig.typeHousing.apartment) {
     inputPriceElement.min = PriceValue.MIN;
@@ -251,7 +207,7 @@ function changeTypeSelectHandler() {
   }
 }
 
-/** валидация поля #title */
+/* валидация поля #title */
 function validateInputTitleHandler() {
   if (inputTitleElement.value.length < TitleLength.MIN_LENGTH) {
     inputTitleElement.setCustomValidity(getMinLengthMessage(TitleLength.MIN_LENGTH, inputTitleElement.value.length));
@@ -260,12 +216,7 @@ function validateInputTitleHandler() {
   }
 }
 
-/**
- * функция вывода кастомной ошибки
- * @param {number} number
- * @param {number} length
- * @return {string}
- */
+/* функция вывода кастомной ошибки */
 function getMinLengthMessage(number, length) {
   return 'Количество символов не может быть меньше ' + number + '.' + ' Текущая длина ' + length;
 }
