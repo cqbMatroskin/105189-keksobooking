@@ -10,7 +10,6 @@ var timeInSelectElement = formElement.querySelector('#time');
 var timeOutSelectElement = formElement.querySelector('#timeout');
 var typeSelectElement = formElement.querySelector('#type');
 
-
 /** массив объектов с парметрами для полей */
 var config = [
   {
@@ -63,7 +62,6 @@ var SelectConfig = {
     palace: 'palace'
   }
 };
-
 
 /* добавляет аттрибуты всем полям заданным в массиве */
 function arrToValidate(arrConfig) {

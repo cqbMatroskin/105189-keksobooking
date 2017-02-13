@@ -20,7 +20,6 @@
     CLICK: 'click'
   };
 
-
 /* проверяет совпадает ли evt.keyCode с клавишей Enter */
   function pinActivate(evt) {
     return evt.keyCode === KeyCode.ENTER || evt.type === EventType.CLICK;
