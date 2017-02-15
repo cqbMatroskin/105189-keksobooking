@@ -36,32 +36,16 @@ var config = [
   }
 ];
 
-var PriceValue = {
-  ZERO: 0,
-  MIN: 1000,
-  PALACE: 10000,
-};
-
 var TitleLength = {
   MIN_LENGTH: 30,
 };
 
-var SelectConfig = {
-  room: {
-    ONE: 1,
-    TWO: 2,
-    ONE_HUNDRED: 100
-  },
-  guest: {
-    THREE: 3,
-    ZERO: 0
-  },
-  typeHousing: {
-    apartment: 'apartment',
-    hovel: 'hovel',
-    palace: 'palace'
-  }
-};
+var TIME_IN_ARR = ['12', '13', '14'];
+var TIME_OUT_ARR = ['12', '13', '14'];
+var QUANTITY_GUESTS = ['0', '3', '3'];
+var QUANTITY_ROOM = ['1', '2', '100'];
+var HOUSE_TYPE = ['apartment', 'hovel', 'palace'];
+var HOUSE_MIN_PRICE = ['1000', '0', '10000'];
 
 /* добавляет аттрибуты всем полям заданным в массиве */
 function arrToValidate(arrConfig) {
@@ -80,42 +64,24 @@ function arrToValidate(arrConfig) {
 
 /* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
 function changeSelectCapacityHandler() {
-  if (roomSelectElement.value < SelectConfig.room.TWO) {
-    capacitySelectElement.value = SelectConfig.guest.ZERO;
-  } else {
-    capacitySelectElement.value = SelectConfig.guest.THREE;
-  }
+  window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, 'value');
 }
 
-/* синхронизация селекта выбора комнаты с селектом количества мест */
 function changeSelectRoomHandler() {
-  if (capacitySelectElement.value < SelectConfig.guest.THREE) {
-    roomSelectElement.value = SelectConfig.room.ONE;
-  } else {
-    roomSelectElement.value = SelectConfig.room.TWO;
-  }
+  window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, 'value');
 }
 
 /* синхронизация полей выбора времени заезда/выезда */
-function synchronizeSelectTimeHandler(evt) {
-  var select;
-  if (evt.target === timeInSelectElement) {
-    select = timeInSelectElement;
-  } else {
-    select = timeOutSelectElement;
-  }
-  select.value = evt.target.value;
+function changeTimeInSelectHandler() {
+  window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, 'value');
 }
 
-/* синхронизация поля выбора жилья и цены за ночь */
+function changeTimeOutSelectHandler() {
+  window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, 'value');
+}
+
 function changeTypeSelectHandler() {
-  if (typeSelectElement.value === SelectConfig.typeHousing.apartment) {
-    inputPriceElement.min = PriceValue.MIN;
-  } else if (typeSelectElement.value === SelectConfig.typeHousing.hovel) {
-    inputPriceElement.min = PriceValue.ZERO;
-  } else {
-    inputPriceElement.min = PriceValue.PALACE;
-  }
+  window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, 'min');
 }
 
 /* валидация поля #title */
@@ -133,12 +99,10 @@ function getMinLengthMessage(number, length) {
 }
 
 arrToValidate(config);
-changeSelectCapacityHandler();
-changeTypeSelectHandler();
 validateInputTitleHandler();
-timeInSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
-timeOutSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
-roomSelectElement.addEventListener('change', changeSelectCapacityHandler);
+timeInSelectElement.addEventListener('change', changeTimeInSelectHandler);
+timeOutSelectElement.addEventListener('change', changeTimeOutSelectHandler);
+roomSelectElement.addEventListener('change', changeSelectRoomHandler);
+capacitySelectElement.addEventListener('change', changeSelectCapacityHandler);
 inputTitleElement.addEventListener('input', validateInputTitleHandler);
-capacitySelectElement.addEventListener('change', changeSelectRoomHandler);
 typeSelectElement.addEventListener('change', changeTypeSelectHandler);
