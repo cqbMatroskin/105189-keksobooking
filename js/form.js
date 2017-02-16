@@ -1,8 +1,5 @@
 'use strict';
 
-var tokyoMapElement = document.querySelector('.tokyo__pin-map');
-var dialogElement = document.querySelector('.dialog');
-var closeElement = dialogElement.querySelector('.dialog__close');
 var formElement = document.querySelector('.notice__form');
 var inputTitleElement = formElement.querySelector('#title');
 var inputAddressElement = formElement.querySelector('#address');
@@ -12,11 +9,6 @@ var capacitySelectElement = formElement.querySelector('#capacity');
 var timeInSelectElement = formElement.querySelector('#time');
 var timeOutSelectElement = formElement.querySelector('#timeout');
 var typeSelectElement = formElement.querySelector('#type');
-var pinActive = tokyoMapElement.querySelector('.pin--active');
-
-var EventType = {
-  CLICK: 'click'
-};
 
 /** массив объектов с парметрами для полей */
 var config = [
@@ -44,43 +36,16 @@ var config = [
   }
 ];
 
-var PriceValue = {
-  ZERO: 0,
-  MIN: 1000,
-  PALACE: 10000,
-};
-
 var TitleLength = {
   MIN_LENGTH: 30,
 };
 
-var SelectConfig = {
-  room: {
-    ONE: 1,
-    TWO: 2,
-    ONE_HUNDRED: 100
-  },
-  guest: {
-    THREE: 3,
-    ZERO: 0
-  },
-  typeHousing: {
-    apartment: 'apartment',
-    hovel: 'hovel',
-    palace: 'palace'
-  }
-};
-
-var ClassName = {
-  INVISIBLE: 'invisible',
-  PIN_ACTIVE: 'pin--active',
-  PIN: 'pin'
-};
-
-var KeyCode = {
-  ESCAPE: 27,
-  ENTER: 13
-};
+var TIME_IN_ARR = ['12', '13', '14'];
+var TIME_OUT_ARR = ['12', '13', '14'];
+var QUANTITY_GUESTS = ['0', '3', '3'];
+var QUANTITY_ROOM = ['1', '2', '100'];
+var HOUSE_TYPE = ['apartment', 'hovel', 'palace'];
+var HOUSE_MIN_PRICE = ['1000', '0', '10000'];
 
 /* добавляет аттрибуты всем полям заданным в массиве */
 function arrToValidate(arrConfig) {
@@ -97,115 +62,17 @@ function arrToValidate(arrConfig) {
   }
 }
 
-/* проверяет совпадает ли evt.keyCode с клавишей Enter */
-function pinActivate(evt) {
-  return evt.keyCode === KeyCode.ENTER || evt.type === EventType.CLICK;
-}
-
-/* вызывает функцию активации по нажатию или клику на .pin */
-function pinHandler(evt) {
-  if (pinActivate(evt)) {
-    selectPin(getClosestElement(evt.target, '.' + ClassName.PIN));
-  }
-}
-
-/*
- * если переданный элемент не соответствует классу,
- * поднимаемся к родителю и проверяем его
- */
-function getClosestElement(element, className) {
-  while (element) {
-    if (element.matches(className)) {
-      return element;
-    } else {
-      element = element.parentElement;
-    }
-  }
-  return null;
-}
-
-/*
- * удаляет класс у неактивного элемента
- * добаляет класс target-у
- * показывает диалоговое окно
- */
-function selectPin(target) {
-  if (target.classList.contains(ClassName.PIN_ACTIVE)) {
-    return;
-  } else if (pinActive) {
-    pinActive.classList.remove(ClassName.PIN_ACTIVE);
-    pinActive.setAttribute('aria-checked', false);
-  }
-  pinActive = target;
-  pinActive.classList.add(ClassName.PIN_ACTIVE);
-  pinActive.setAttribute('aria-checked', true);
-  toggleDialog(true);
-}
-
-function toggleDialog(flag) {
-  dialogElement.classList.toggle(ClassName.INVISIBLE, !flag);
-  dialogElement.setAttribute('aria-hidden', !flag);
-  if (flag) {
-    closeElement.addEventListener('click', closeDialogHandler);
-    document.addEventListener('keydown', keyDownToCloseDialog);
-  } else {
-    closeElement.removeEventListener('click', closeDialogHandler);
-    document.removeEventListener('keydown', keyDownToCloseDialog);
-  }
-}
-
-/* закрывает диалоговое окно по клику */
-function closeDialogHandler(evt) {
-  evt.preventDefault();
-  toggleDialog(false);
-}
-
-/* закрывает диалоговое окно при нажатии Esc */
-function keyDownToCloseDialog(evt) {
-  if (evt.keyCode === KeyCode.ESCAPE) {
-    toggleDialog(false);
-  }
-}
-
 /* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
-function changeSelectCapacityHandler() {
-  if (roomSelectElement.value < SelectConfig.room.TWO) {
-    capacitySelectElement.value = SelectConfig.guest.ZERO;
-  } else {
-    capacitySelectElement.value = SelectConfig.guest.THREE;
-  }
-}
+window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, 'value');
 
-/* синхронизация селекта выбора комнаты с селектом количества мест */
-function changeSelectRoomHandler() {
-  if (capacitySelectElement.value < SelectConfig.guest.THREE) {
-    roomSelectElement.value = SelectConfig.room.ONE;
-  } else {
-    roomSelectElement.value = SelectConfig.room.TWO;
-  }
-}
+window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, 'value');
 
 /* синхронизация полей выбора времени заезда/выезда */
-function synchronizeSelectTimeHandler(evt) {
-  var select;
-  if (evt.target === timeInSelectElement) {
-    select = timeInSelectElement;
-  } else {
-    select = timeOutSelectElement;
-  }
-  select.value = evt.target.value;
-}
+window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, 'value');
 
-/* синхронизация поля выбора жилья и цены за ночь */
-function changeTypeSelectHandler() {
-  if (typeSelectElement.value === SelectConfig.typeHousing.apartment) {
-    inputPriceElement.min = PriceValue.MIN;
-  } else if (typeSelectElement.value === SelectConfig.typeHousing.hovel) {
-    inputPriceElement.min = PriceValue.ZERO;
-  } else {
-    inputPriceElement.min = PriceValue.PALACE;
-  }
-}
+window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, 'value');
+
+window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, 'min');
 
 /* валидация поля #title */
 function validateInputTitleHandler() {
@@ -222,14 +89,5 @@ function getMinLengthMessage(number, length) {
 }
 
 arrToValidate(config);
-changeSelectCapacityHandler();
-changeTypeSelectHandler();
 validateInputTitleHandler();
-tokyoMapElement.addEventListener('click', pinHandler);
-tokyoMapElement.addEventListener('keydown', pinHandler);
-timeInSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
-timeOutSelectElement.addEventListener('change', synchronizeSelectTimeHandler);
-roomSelectElement.addEventListener('change', changeSelectCapacityHandler);
 inputTitleElement.addEventListener('input', validateInputTitleHandler);
-capacitySelectElement.addEventListener('change', changeSelectRoomHandler);
-typeSelectElement.addEventListener('change', changeTypeSelectHandler);
