@@ -63,26 +63,18 @@ function arrToValidate(arrConfig) {
 }
 
 /* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
-function changeSelectCapacityHandler() {
-  window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, 'value');
-}
+window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, 'value');
 
-function changeSelectRoomHandler() {
-  window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, 'value');
-}
+window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, 'value');
 
 /* синхронизация полей выбора времени заезда/выезда */
-function changeTimeInSelectHandler() {
-  window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, 'value');
-}
+window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, 'value');
 
 function changeTimeOutSelectHandler() {
   window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, 'value');
 }
 
-function changeTypeSelectHandler() {
-  window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, 'min');
-}
+window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, 'min');
 
 /* валидация поля #title */
 function validateInputTitleHandler() {
@@ -100,9 +92,5 @@ function getMinLengthMessage(number, length) {
 
 arrToValidate(config);
 validateInputTitleHandler();
-timeInSelectElement.addEventListener('change', changeTimeInSelectHandler);
 timeOutSelectElement.addEventListener('change', changeTimeOutSelectHandler);
-roomSelectElement.addEventListener('change', changeSelectRoomHandler);
-capacitySelectElement.addEventListener('change', changeSelectCapacityHandler);
 inputTitleElement.addEventListener('input', validateInputTitleHandler);
-typeSelectElement.addEventListener('change', changeTypeSelectHandler);
