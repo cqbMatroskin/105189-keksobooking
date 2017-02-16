@@ -70,9 +70,7 @@ window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM
 /* синхронизация полей выбора времени заезда/выезда */
 window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, 'value');
 
-function changeTimeOutSelectHandler() {
-  window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, 'value');
-}
+window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, 'value');
 
 window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, 'min');
 
@@ -92,5 +90,4 @@ function getMinLengthMessage(number, length) {
 
 arrToValidate(config);
 validateInputTitleHandler();
-timeOutSelectElement.addEventListener('change', changeTimeOutSelectHandler);
 inputTitleElement.addEventListener('input', validateInputTitleHandler);
