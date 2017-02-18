@@ -20,15 +20,22 @@
     CLICK: 'click'
   };
 
+  window.onHideCard = null;
+
 /* проверяет совпадает ли evt.keyCode с клавишей Enter */
   function pinActivate(evt) {
     return evt.keyCode === KeyCode.ENTER || evt.type === EventType.CLICK;
   }
 
+
 /* вызывает функцию активации по нажатию или клику на .pin */
   function pinHandler(evt) {
     if (pinActivate(evt)) {
-      selectPin(getClosestElement(evt.target, '.' + ClassName.PIN));
+      if (evt.keyCode === KeyCode.ENTER) {
+        selectPin(getClosestElement(evt.target, '.' + ClassName.PIN), focusPinActive);
+      } else {
+        selectPin(getClosestElement(evt.target, '.' + ClassName.PIN));
+      }
     }
   }
 
@@ -52,9 +59,9 @@
  * добаляет класс target-у
  * показывает диалоговое окно
  */
-  function selectPin(target) {
+  function selectPin(target, callback) {
     if (target.classList.contains(ClassName.PIN_ACTIVE)) {
-      return;
+      toggleDialog(true, callback);
     } else if (pinActive) {
       pinActive.classList.remove(ClassName.PIN_ACTIVE);
       pinActive.setAttribute('aria-checked', false);
@@ -62,16 +69,24 @@
     pinActive = target;
     pinActive.classList.add(ClassName.PIN_ACTIVE);
     pinActive.setAttribute('aria-checked', true);
-    toggleDialog(true);
+    toggleDialog(true, callback);
   }
 
-  function toggleDialog(flag) {
-    dialogElement.classList.toggle(ClassName.INVISIBLE, !flag);
+  function focusPinActive() {
+    pinActive.focus();
+  }
+
+  function toggleDialog(flag, callback) {
     dialogElement.setAttribute('aria-hidden', !flag);
     if (flag) {
+      window.showCard(callback);
       closeElement.addEventListener('click', closeDialogHandler);
       document.addEventListener('keydown', keyDownToCloseDialog);
     } else {
+      dialogElement.classList.add(ClassName.INVISIBLE);
+      if (typeof window.onHideCard === 'function') {
+        window.onHideCard();
+      }
       closeElement.removeEventListener('click', closeDialogHandler);
       document.removeEventListener('keydown', keyDownToCloseDialog);
     }
