@@ -62,10 +62,17 @@ function arrToValidate(arrConfig) {
   }
 }
 
-/* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
-var syncValues = function (element, value) {
+/* двусторонняя синхронизация полей */
+function syncValues(element, value) {
   element.value = value;
-};
+}
+
+/* Одностороння синхронизация значения первого поля с минимальным значением второго */
+function syncValueWithMin(element, value) {
+  element.min = value;
+}
+
+/* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
 window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, syncValues);
 
 window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, syncValues);
@@ -75,9 +82,6 @@ window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR,
 
 window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, syncValues);
 
-var syncValueWithMin = function (element, value) {
-  element.min = value;
-};
 window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, syncValueWithMin);
 
 /* валидация поля #title */

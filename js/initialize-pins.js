@@ -1,8 +1,10 @@
 'use strict';
+
 (function initializePins() {
   var tokyoMapElement = document.querySelector('.tokyo__pin-map');
   var pinActive = tokyoMapElement.querySelector('.pin--active');
   var showCard = window.showCard;
+  var ENTER_KEY_CODE = 13;
 
   var ClassName = {
     INVISIBLE: 'invisible',
@@ -10,19 +12,12 @@
     PIN: 'pin'
   };
 
-  var KeyCode = {
-    ENTER: 13
-  };
-
-  var cb = null;
-
 /* обработчик нажатия клавиши по пину */
   function pinKeyDownHandler(evt) {
-    if (evt.keyCode === KeyCode.ENTER) {
-      cb = function () {
+    if (evt.keyCode === ENTER_KEY_CODE) {
+      showCard(function () {
         pinActive.focus();
-      };
-      showCard(cb);
+      });
       selectPin(getClosestElement(evt.target, '.' + ClassName.PIN));
     }
   }
@@ -32,6 +27,16 @@
     showCard();
     selectPin(getClosestElement(evt.target, '.' + ClassName.PIN));
   }
+
+/* префиксы для matches */
+  (function () {
+    if (!Element.prototype.matches) {
+      Element.prototype.matches = Element.prototype.matchesSelector ||
+      Element.prototype.webkitMatchesSelector ||
+      Element.prototype.mozMatchesSelector ||
+      Element.prototype.msMatchesSelector;
+    }
+  })();
 
 /*
  * если переданный элемент не соответствует классу,

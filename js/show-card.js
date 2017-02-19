@@ -16,15 +16,15 @@ window.showCard = (function () {
   }
 
   /* закрывает диалоговое окно по клику */
-  function closeDialogHandler(evt) {
+  function clickDialogHandler(evt) {
     evt.preventDefault();
     toggleDialog(false);
-    closeElement.removeEventListener('click', closeDialogHandler);
-    document.removeEventListener('keydown', keyDownToCloseDialog);
+    closeElement.removeEventListener('click', clickDialogHandler);
+    document.removeEventListener('keydown', pressEscDialogHandler);
   }
 
 /* закрывает диалоговое окно при нажатии Esc */
-  function keyDownToCloseDialog(evt) {
+  function pressEscDialogHandler(evt) {
     if (evt.keyCode === ESCAPE_KEY_CODE) {
       toggleDialog(false);
     }
@@ -33,7 +33,7 @@ window.showCard = (function () {
   return function (callback) {
     cb = callback;
     toggleDialog(true);
-    closeElement.addEventListener('click', closeDialogHandler);
-    document.addEventListener('keydown', keyDownToCloseDialog);
+    closeElement.addEventListener('click', clickDialogHandler);
+    document.addEventListener('keydown', pressEscDialogHandler);
   };
 }());
