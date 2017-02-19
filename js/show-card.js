@@ -20,11 +20,11 @@ window.showCard = (function () {
     evt.preventDefault();
     toggleDialog(false);
     closeElement.removeEventListener('click', clickDialogHandler);
-    document.removeEventListener('keydown', pressEscDialogHandler);
+    document.removeEventListener('keydown', documentKeyDownHandler);
   }
 
 /* закрывает диалоговое окно при нажатии Esc */
-  function pressEscDialogHandler(evt) {
+  function documentKeyDownHandler(evt) {
     if (evt.keyCode === ESCAPE_KEY_CODE) {
       toggleDialog(false);
     }
@@ -34,6 +34,6 @@ window.showCard = (function () {
     cb = callback;
     toggleDialog(true);
     closeElement.addEventListener('click', clickDialogHandler);
-    document.addEventListener('keydown', pressEscDialogHandler);
+    document.addEventListener('keydown', documentKeyDownHandler);
   };
 }());
