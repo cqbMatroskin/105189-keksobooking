@@ -63,16 +63,22 @@ function arrToValidate(arrConfig) {
 }
 
 /* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
-window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, 'value');
+var syncValues = function (element, value) {
+  element.value = value;
+};
+window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, syncValues);
 
-window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, 'value');
+window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, syncValues);
 
 /* синхронизация полей выбора времени заезда/выезда */
-window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, 'value');
+window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, syncValues);
 
-window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, 'value');
+window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, syncValues);
 
-window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, 'min');
+var syncValueWithMin = function (element, value) {
+  element.min = value;
+};
+window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, syncValueWithMin);
 
 /* валидация поля #title */
 function validateInputTitleHandler() {
