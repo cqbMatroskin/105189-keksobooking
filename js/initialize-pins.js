@@ -1,8 +1,8 @@
 'use strict';
 
 (function initializePins() {
-  var tokyoMapElement = document.querySelector('.tokyo__pin-map');
-  var pinActive = tokyoMapElement.querySelector('.pin--active');
+  var pinsMapElement = document.querySelector('.tokyo__pin-map');
+  var pinActive = pinsMapElement.querySelector('.pin--active');
   var showCard = window.showCard;
 
   var ClassName = {
@@ -11,8 +11,8 @@
     PIN: 'pin'
   };
 
-/* обработчик нажатия клавиши по пину */
-  function pinMapKeyDownHandler(evt) {
+  /* обработчик нажатия клавиши по пину */
+  function pinsMapKeyDownHandler(evt) {
     if (evt.keyCode === window.utils.KeyCodes.ENTER) {
       showCard(function () {
         pinActive.focus();
@@ -22,16 +22,16 @@
   }
 
   /* обработчик клика по пину */
-  function pinMapClickHandler(evt) {
+  function pinsMapClickHandler(evt) {
     showCard();
     selectPin(window.utils.getClosestElement(evt.target, '.' + ClassName.PIN));
   }
 
-/*
- * удаляет класс у неактивного элемента
- * добаляет класс target-у
- * показывает диалоговое окно
- */
+  /*
+  * удаляет класс у неактивного элемента
+  * добаляет класс target-у
+  * показывает диалоговое окно
+  */
   function selectPin(target) {
     if (pinActive) {
       pinActive.classList.remove(ClassName.PIN_ACTIVE);
@@ -42,8 +42,8 @@
     pinActive.setAttribute('aria-checked', true);
   }
 
-  tokyoMapElement.addEventListener('click', pinMapClickHandler);
-  tokyoMapElement.addEventListener('keydown', pinMapKeyDownHandler);
+  pinsMapElement.addEventListener('click', pinsMapClickHandler);
+  pinsMapElement.addEventListener('keydown', pinsMapKeyDownHandler);
 }());
 
 window.utils.selectorMatches();

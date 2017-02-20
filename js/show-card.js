@@ -22,7 +22,7 @@ window.showCard = (function () {
     document.removeEventListener('keydown', documentKeyDownHandler);
   }
 
-/* закрывает диалоговое окно при нажатии Esc */
+  /* закрывает диалоговое окно при нажатии Esc */
   function documentKeyDownHandler(evt) {
     if (evt.keyCode === window.utils.KeyCodes.ESCAPE) {
       toggleDialog(false);

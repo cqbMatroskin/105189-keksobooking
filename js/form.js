@@ -97,12 +97,10 @@ inputTitleElement.addEventListener('input', validateInputTitleHandler);
 
 /* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
 window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, syncValues);
-
 window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, syncValues);
 
 /* синхронизация полей выбора времени заезда/выезда */
 window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, syncValues);
-
 window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, syncValues);
 
 /* синхронизация поля типа жилья с полем цены */
