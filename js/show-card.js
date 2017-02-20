@@ -4,7 +4,6 @@ window.showCard = (function () {
   var dialogElement = document.querySelector('.dialog');
   var closeElement = dialogElement.querySelector('.dialog__close');
   var INVISIBLE_CLASS_NAME = 'invisible';
-  var ESCAPE_KEY_CODE = 27;
   var cb;
 
   function toggleDialog(flag) {
@@ -25,7 +24,7 @@ window.showCard = (function () {
 
 /* закрывает диалоговое окно при нажатии Esc */
   function documentKeyDownHandler(evt) {
-    if (evt.keyCode === ESCAPE_KEY_CODE) {
+    if (evt.keyCode === window.utils.KeyCodes.ESCAPE) {
       toggleDialog(false);
     }
   }

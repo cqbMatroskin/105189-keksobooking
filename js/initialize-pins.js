@@ -4,7 +4,6 @@
   var tokyoMapElement = document.querySelector('.tokyo__pin-map');
   var pinActive = tokyoMapElement.querySelector('.pin--active');
   var showCard = window.showCard;
-  var ENTER_KEY_CODE = 13;
 
   var ClassName = {
     INVISIBLE: 'invisible',
@@ -13,44 +12,19 @@
   };
 
 /* обработчик нажатия клавиши по пину */
-  function pinKeyDownHandler(evt) {
-    if (evt.keyCode === ENTER_KEY_CODE) {
+  function pinMapKeyDownHandler(evt) {
+    if (evt.keyCode === window.utils.KeyCodes.ENTER) {
       showCard(function () {
         pinActive.focus();
       });
-      selectPin(getClosestElement(evt.target, '.' + ClassName.PIN));
+      selectPin(window.utils.getClosestElement(evt.target, '.' + ClassName.PIN));
     }
   }
 
   /* обработчик клика по пину */
-  function pinClickHandler(evt) {
+  function pinMapClickHandler(evt) {
     showCard();
-    selectPin(getClosestElement(evt.target, '.' + ClassName.PIN));
-  }
-
-/* префиксы для matches */
-  (function () {
-    if (!Element.prototype.matches) {
-      Element.prototype.matches = Element.prototype.matchesSelector ||
-      Element.prototype.webkitMatchesSelector ||
-      Element.prototype.mozMatchesSelector ||
-      Element.prototype.msMatchesSelector;
-    }
-  })();
-
-/*
- * если переданный элемент не соответствует классу,
- * поднимаемся к родителю и проверяем его
- */
-  function getClosestElement(element, className) {
-    while (element) {
-      if (element.matches(className)) {
-        return element;
-      } else {
-        element = element.parentElement;
-      }
-    }
-    return null;
+    selectPin(window.utils.getClosestElement(evt.target, '.' + ClassName.PIN));
   }
 
 /*
@@ -68,6 +42,8 @@
     pinActive.setAttribute('aria-checked', true);
   }
 
-  tokyoMapElement.addEventListener('click', pinClickHandler);
-  tokyoMapElement.addEventListener('keydown', pinKeyDownHandler);
+  tokyoMapElement.addEventListener('click', pinMapClickHandler);
+  tokyoMapElement.addEventListener('keydown', pinMapKeyDownHandler);
 }());
+
+window.utils.selectorMatches();
