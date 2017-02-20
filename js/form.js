@@ -62,17 +62,15 @@ function arrToValidate(arrConfig) {
   }
 }
 
-/* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
-window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, 'value');
+/* двусторонняя синхронизация полей */
+function syncValues(element, value) {
+  element.value = value;
+}
 
-window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, 'value');
-
-/* синхронизация полей выбора времени заезда/выезда */
-window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, 'value');
-
-window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, 'value');
-
-window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, 'min');
+/* Одностороння синхронизация значения первого поля с минимальным значением второго */
+function syncValueWithMin(element, value) {
+  element.min = value;
+}
 
 /* валидация поля #title */
 function validateInputTitleHandler() {
@@ -88,6 +86,22 @@ function getMinLengthMessage(number, length) {
   return 'Количество символов не может быть меньше ' + number + '.' + ' Текущая длина ' + length;
 }
 
+/* расстановка атрибутов для полей указанных в массиве config */
 arrToValidate(config);
+
+/* валидация поля заголовка при загрузке страницы */
 validateInputTitleHandler();
+
+/* валидация поля заголовка при изменении */
 inputTitleElement.addEventListener('input', validateInputTitleHandler);
+
+/* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
+window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, syncValues);
+window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, syncValues);
+
+/* синхронизация полей выбора времени заезда/выезда */
+window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, syncValues);
+window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, syncValues);
+
+/* синхронизация поля типа жилья с полем цены */
+window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, syncValueWithMin);
