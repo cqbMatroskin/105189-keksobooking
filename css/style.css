@@ -669,3 +669,7 @@ select option:hover {
   text-align: center;
   font-size: 30px;
 }
+
+template {
+  display: none;
+}
