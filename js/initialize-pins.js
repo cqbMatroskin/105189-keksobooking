@@ -3,7 +3,14 @@
 (function initializePins() {
   var pinsMapElement = document.querySelector('.tokyo__pin-map');
   var pinActive = pinsMapElement.querySelector('.pin--active');
+  var errorElement = document.querySelector('.error');
+  var similarApartments = [];
   var showCard = window.showCard;
+  var utils = window.utils;
+  var load = window.load;
+  var renderPin = window.renderPin;
+
+  var DATA_URL = 'https://intensive-javascript-server-pedmyactpq.now.sh/keksobooking/data';
 
   var ClassName = {
     INVISIBLE: 'invisible',
@@ -13,18 +20,18 @@
 
   /* обработчик нажатия клавиши по пину */
   function pinsMapKeyDownHandler(evt) {
-    if (evt.keyCode === window.utils.KeyCodes.ENTER) {
+    if (evt.keyCode === utils.KeyCodes.ENTER) {
       showCard(function () {
         pinActive.focus();
       });
-      selectPin(window.utils.getClosestElement(evt.target, '.' + ClassName.PIN));
+      selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
     }
   }
 
   /* обработчик клика по пину */
   function pinsMapClickHandler(evt) {
     showCard();
-    selectPin(window.utils.getClosestElement(evt.target, '.' + ClassName.PIN));
+    selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
   }
 
   /*
@@ -42,8 +49,23 @@
     pinActive.setAttribute('aria-checked', true);
   }
 
+  /* сохраняет в массив первые три индекса */
+  function dataLoad(data) {
+    similarApartments = data;
+    var arr = similarApartments.slice(0, 3);
+    arr.forEach(function (element) {
+      pinsMapElement.appendChild(renderPin(element));
+    });
+  }
+
+  /* выводит ошибку на экран */
+  function onErrorLoad(err) {
+    errorElement.classList.remove('invisible');
+    errorElement.textContent = err;
+  }
+
+  load(DATA_URL, dataLoad, onErrorLoad);
   pinsMapElement.addEventListener('click', pinsMapClickHandler);
   pinsMapElement.addEventListener('keydown', pinsMapKeyDownHandler);
+  utils.selectorMatches();
 }());
-
-window.utils.selectorMatches();
