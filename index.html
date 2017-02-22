@@ -67,9 +67,6 @@
     </div>
     <div class="tokyo__pin-map">
       <div class="pin  pin__main" role="radio" aria-checked="false" tabindex="0"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44"></div>
-      <div class="pin  pin--active" role="radio" aria-checked="false" tabindex="0" style="left: 700px;top: 350px"><img src="img/avatars/avatar.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
-      <div class="pin" role="radio" aria-checked="false" tabindex="0" style="left: 400px;top: 400px"><img src="img/avatars/simpson.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
-      <div class="pin" role="radio" aria-checked="false" tabindex="0"><img src="img/avatars/default.png" alt="User Avatar" class="rounded" width="40" height="40"></div>
     </div>
     <div class="dialog invisible" role="dialog" aria-labelledby="lodge__title" aria-describedby="lodge__description" aria-hidden="true">
       <div class="dialog__title"><img src="img/avatars/avatar.png" alt="Avatar" width="70" height="70">
@@ -255,6 +252,14 @@
     </nav>
   </div>
 </footer>
+<template id="pin-template">
+  <div class="pin">
+    <img src="" alt="" class="rounded" width="40" height="40">
+  </div>
+</template>
+<div class="error invisible"></div>
+<script src="js/load.js"></script>
+<script src="js/render-pin.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/show-card.js"></script>
 <script src="js/initialize-pins.js"></script>
