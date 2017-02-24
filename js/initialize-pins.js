@@ -23,17 +23,9 @@
     HEIGHT: 75
   };
 
-  /* обработчик нажатия клавиши по пину */
-  function pinsMapKeyDownHandler(evt) {
-    if (evt.keyCode === utils.KeyCodes.ENTER) {
-      pinActive.focus();
-      selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
-    }
-  }
-
   /* обработчик клика по пину */
-  function pinsMapClickHandler(evt) {
-    selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
+  function focusPin() {
+    pinActive.focus();
   }
 
   /*
@@ -59,11 +51,13 @@
       newPin.style.top = pinData.location.y - PinSize.HEIGHT / 2 + 'px';
       newPin.style.left = pinData.location.x - PinSize.WIDTH / 2 + 'px';
       newPin.addEventListener('keydown', function (evt) {
-        pinsMapKeyDownHandler(evt);
-        showCard(pinData);
+        if (evt.keyCode === utils.KeyCodes.ENTER) {
+          selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
+          showCard(pinData, focusPin);
+        }
       });
       newPin.addEventListener('click', function (evt) {
-        pinsMapClickHandler(evt);
+        selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
         showCard(pinData);
       });
       pinsMapElement.appendChild(newPin);

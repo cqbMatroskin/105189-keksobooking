@@ -2,17 +2,15 @@
 
 window.showCard = (function () {
   var cardContainer = document.querySelector('.tokyo__pin-map');
-  var INVISIBLE_CLASS_NAME = 'invisible';
+  var currentCard = cardContainer.querySelector('.dialog');
   var renderCard = window.renderCard;
-  var currentCard;
   var closeElement;
   var cb;
 
-
-  function toggleDialog(flag, card) {
-    card.classList.toggle(INVISIBLE_CLASS_NAME, !flag);
-    card.setAttribute('aria-hidden', !flag);
-    if (!flag && cb) {
+  function deleteDialogElement() {
+    cardContainer.removeChild(currentCard);
+    currentCard = null;
+    if (cb) {
       cb();
     }
   }
@@ -20,7 +18,7 @@ window.showCard = (function () {
   /* закрывает диалоговое окно по клику */
   function clickDialogHandler(evt) {
     evt.preventDefault();
-    toggleDialog(false, currentCard);
+    deleteDialogElement();
     closeElement.removeEventListener('click', clickDialogHandler);
     document.removeEventListener('keydown', documentKeyDownHandler);
   }
@@ -28,7 +26,7 @@ window.showCard = (function () {
   /* закрывает диалоговое окно при нажатии Esc */
   function documentKeyDownHandler(evt) {
     if (evt.keyCode === window.utils.KeyCodes.ESCAPE) {
-      toggleDialog(false, currentCard);
+      deleteDialogElement();
     }
   }
 
@@ -42,13 +40,11 @@ window.showCard = (function () {
       currentCard = newCard;
       closeElement = currentCard.querySelector('.dialog__close');
       closeElement.addEventListener('click', clickDialogHandler);
-      toggleDialog(true, currentCard);
     } else {
       currentCard = renderCard(data);
       closeElement = currentCard.querySelector('.dialog__close');
       closeElement.addEventListener('click', clickDialogHandler);
       cardContainer.appendChild(currentCard);
-      toggleDialog(true, currentCard);
     }
   };
 }());
