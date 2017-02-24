@@ -655,3 +655,21 @@ select option:hover {
 .invisible {
   display: none;
 }
+
+.error {
+  z-index: 101;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-color: #ff6d51;
+  color: #fff;
+  text-align: center;
+  font-size: 30px;
+}
+
+template {
+  display: none;
+}

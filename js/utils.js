@@ -28,9 +28,10 @@ window.utils = (function () {
     return null;
   }
 
+  selectorMatches();
+
   return {
     KeyCodes: KeyCodes,
-    selectorMatches: selectorMatches,
     getClosestElement: getClosestElement,
   };
 }());
