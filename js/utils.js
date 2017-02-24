@@ -18,6 +18,7 @@ window.utils = (function () {
   * поднимаемся к родителю и проверяем его
   */
   function getClosestElement(element, className) {
+    selectorMatches();
     while (element) {
       if (element.matches(className)) {
         return element;
@@ -30,7 +31,6 @@ window.utils = (function () {
 
   return {
     KeyCodes: KeyCodes,
-    selectorMatches: selectorMatches,
     getClosestElement: getClosestElement,
   };
 }());

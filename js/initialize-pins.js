@@ -18,27 +18,29 @@
     PIN: 'pin'
   };
 
+  var PinSize = {
+    WIDTH: 56,
+    HEIGHT: 75
+  };
+
   /* обработчик нажатия клавиши по пину */
   function pinsMapKeyDownHandler(evt) {
     if (evt.keyCode === utils.KeyCodes.ENTER) {
-      showCard(function () {
-        pinActive.focus();
-      });
+      pinActive.focus();
       selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
     }
   }
 
   /* обработчик клика по пину */
   function pinsMapClickHandler(evt) {
-    showCard();
     selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
   }
 
   /*
-  * удаляет класс у неактивного элемента
-  * добаляет класс target-у
-  * показывает диалоговое окно
-  */
+   * удаляет класс у неактивного элемента
+   * добаляет класс target-у
+   * показывает диалоговое окно
+   */
   function selectPin(target) {
     if (pinActive) {
       pinActive.classList.remove(ClassName.PIN_ACTIVE);
@@ -50,11 +52,21 @@
   }
 
   /* сохраняет в массив первые три индекса */
-  function dataLoad(data) {
+  function onDataLoad(data) {
     similarApartments = data;
-    var arr = similarApartments.slice(0, 3);
-    arr.forEach(function (element) {
-      pinsMapElement.appendChild(renderPin(element));
+    similarApartments.slice(0, 3).forEach(function (pinData) {
+      var newPin = renderPin(pinData);
+      newPin.style.top = pinData.location.y - PinSize.HEIGHT / 2 + 'px';
+      newPin.style.left = pinData.location.x - PinSize.WIDTH / 2 + 'px';
+      newPin.addEventListener('keydown', function (evt) {
+        pinsMapKeyDownHandler(evt);
+        showCard(pinData);
+      });
+      newPin.addEventListener('click', function (evt) {
+        pinsMapClickHandler(evt);
+        showCard(pinData);
+      });
+      pinsMapElement.appendChild(newPin);
     });
   }
 
@@ -64,8 +76,5 @@
     errorElement.textContent = err;
   }
 
-  load(DATA_URL, dataLoad, onErrorLoad);
-  pinsMapElement.addEventListener('click', pinsMapClickHandler);
-  pinsMapElement.addEventListener('keydown', pinsMapKeyDownHandler);
-  utils.selectorMatches();
+  load(DATA_URL, onDataLoad, onErrorLoad);
 }());

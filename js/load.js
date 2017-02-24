@@ -1,7 +1,9 @@
 'use strict';
 
 window.load = (function () {
-  var errorHandler;
+  var errorHandler = function (err) {
+    return err;
+  };
 
   var StatusCode = {
     ERROR_CLIENT_SIDE: 400,
