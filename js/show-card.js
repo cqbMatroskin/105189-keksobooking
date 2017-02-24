@@ -15,18 +15,28 @@ window.showCard = (function () {
     }
   }
 
+  function addListner() {
+    closeElement.addEventListener('click', clickDialogHandler);
+    document.addEventListener('keydown', documentKeyDownHandler);
+  }
+
+  function removeListener() {
+    closeElement.removeEventListener('click', clickDialogHandler);
+    document.removeEventListener('keydown', documentKeyDownHandler);
+  }
+
   /* закрывает диалоговое окно по клику */
   function clickDialogHandler(evt) {
     evt.preventDefault();
     deleteDialogElement();
-    closeElement.removeEventListener('click', clickDialogHandler);
-    document.removeEventListener('keydown', documentKeyDownHandler);
+    removeListener();
   }
 
   /* закрывает диалоговое окно при нажатии Esc */
   function documentKeyDownHandler(evt) {
     if (evt.keyCode === window.utils.KeyCodes.ESCAPE) {
       deleteDialogElement();
+      removeListener();
     }
   }
 
@@ -39,11 +49,11 @@ window.showCard = (function () {
       cardContainer.replaceChild(newCard, currentCard);
       currentCard = newCard;
       closeElement = currentCard.querySelector('.dialog__close');
-      closeElement.addEventListener('click', clickDialogHandler);
+      addListner();
     } else {
       currentCard = renderCard(data);
       closeElement = currentCard.querySelector('.dialog__close');
-      closeElement.addEventListener('click', clickDialogHandler);
+      addListner();
       cardContainer.appendChild(currentCard);
     }
   };
