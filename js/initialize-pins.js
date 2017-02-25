@@ -1,6 +1,6 @@
 'use strict';
 
-(function initializePins() {
+(function () {
   var pinsMapElement = document.querySelector('.tokyo__pin-map');
   var pinActive = pinsMapElement.querySelector('.pin--active');
   var errorElement = document.querySelector('.error');
@@ -61,7 +61,7 @@
     pinsDataList.forEach(function (pinData) {
       var newPin = renderPin(pinData);
       currentPins.push(newPin);
-      newPin.style.top = pinData.location.y - PinSize.HEIGHT / 2 + 'px';
+      newPin.style.top = pinData.location.y - PinSize.HEIGHT + 'px';
       newPin.style.left = pinData.location.x - PinSize.WIDTH / 2 + 'px';
       newPin.addEventListener('keydown', function (evt) {
         if (evt.keyCode === utils.KeyCodes.ENTER) {

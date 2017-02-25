@@ -58,7 +58,6 @@ window.showCard = (function () {
       var newCard = renderCard(data);
       cardContainer.replaceChild(newCard, currentCard);
       currentCard = newCard;
-      addListners();
     } else {
       currentCard = renderCard(data);
       cardContainer.appendChild(currentCard);
