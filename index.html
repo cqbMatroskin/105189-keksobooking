@@ -14,7 +14,7 @@
   <section class="tokyo">
     <img src="img/main.png" alt="Tokyo" width="1200" height="700">
     <div class="tokyo__filters-container">
-      <form action="#" class="tokyo__filters">
+      <form action="#" name="housing_filter" class="tokyo__filters">
         <label><select name="housing_type" id="housing_type" class="tokyo__filter">
           <option value="any" selected>Любой тип жилья</option>
           <option value="flat">Квартира</option>
@@ -24,7 +24,7 @@
         <label><select name="housing_price" id="housing_price" class="tokyo__filter">
           <option value="middle" selected>10000 - 50000&#x20bd;</option>
           <option value="low">до 10000&#x20bd;</option>
-          <option value="hight">от 50000&#x20bd;</option>
+          <option value="high">от 50000&#x20bd;</option>
         </select></label>
         <label><select name="housing_room-number" id="housing_room-number" class="tokyo__filter">
           <option value="any" selected>Любое число комнат</option>
@@ -66,7 +66,7 @@
       </form>
     </div>
     <div class="tokyo__pin-map">
-      <div class="pin  pin__main" role="radio" aria-checked="false" tabindex="0"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44"></div>
+      <div class="pin  pin__main" role="radio" aria-checked="false"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44"></div>
     </div>
   </section>
   <div class="notice">

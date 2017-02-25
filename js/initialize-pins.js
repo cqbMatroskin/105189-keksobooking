@@ -52,6 +52,7 @@
       pinElement.parentElement.removeChild(pinElement);
     });
     currentPins = [];
+    showCard(null, null, false);
   }
 
   /* отрисовывает пины */

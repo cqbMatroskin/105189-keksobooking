@@ -1,12 +1,12 @@
 'use strict';
 
 window.filterPins = (function () {
-  var filtersElement = document.querySelector('.tokyo__filters');
-  var housingTypeElement = filtersElement.querySelector('#housing_type');
-  var housingRoomsElement = filtersElement.querySelector('#housing_room-number');
-  var housingGuestsElement = filtersElement.querySelector('#housing_guests-number');
-  var housingPriceElement = filtersElement.querySelector('#housing_price');
-  var featureList = filtersElement.feature;
+  var filtersFormElement = document.querySelector('.tokyo__filters');
+  var housingTypeElement = filtersFormElement.querySelector('#housing_type');
+  var housingRoomsElement = filtersFormElement.querySelector('#housing_room-number');
+  var housingGuestsElement = filtersFormElement.querySelector('#housing_guests-number');
+  var housingPriceElement = filtersFormElement.querySelector('#housing_price');
+  var formFeatureList = filtersFormElement.feature;
   var SELECT_FILTER_ANY = 'any';
 
   var HousePrice = {
@@ -17,7 +17,7 @@ window.filterPins = (function () {
   var HousePriceValue = {
     LOW: 'low',
     MIDDLE: 'middle',
-    HIGHT: 'hight'
+    HIGHT: 'high'
   };
 
   /* проверяет совадение типа жилья со значением в offers.type  */
@@ -50,8 +50,8 @@ window.filterPins = (function () {
 
   /* проверяет выбранные чекбоксы features c массивом значений features */
   function checkHousingFeatures(features) {
-    for (var i = 0; i < featureList.length; i++) {
-      if (featureList[i].checked && features.indexOf(featureList[i].value) === -1) {
+    for (var i = 0; i < formFeatureList.length; i++) {
+      if (formFeatureList[i].checked && features.indexOf(formFeatureList[i].value) === -1) {
         return false;
       }
     }
@@ -60,7 +60,11 @@ window.filterPins = (function () {
 
   return function (pinsDataList) {
     return pinsDataList.filter(function (pinData) {
-      return checkHouseType(pinData.offer.type) && checkHouseRooms(pinData.offer.rooms) && checkHouseGuets(pinData.offer.guests) && checkHousingFeatures(pinData.offer.features) && checkHousePrice(pinData.offer.price);
+      return checkHouseType(pinData.offer.type) &&
+             checkHouseRooms(pinData.offer.rooms) &&
+             checkHouseGuets(pinData.offer.guests) &&
+             checkHousingFeatures(pinData.offer.features) &&
+             checkHousePrice(pinData.offer.price);
     });
   };
 }());
