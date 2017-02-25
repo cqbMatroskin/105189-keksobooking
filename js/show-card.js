@@ -15,7 +15,7 @@ window.showCard = (function () {
     }
   }
 
-  function addListner() {
+  function addListners() {
     closeElement.addEventListener('click', clickDialogHandler);
     document.addEventListener('keydown', documentKeyDownHandler);
   }
@@ -40,21 +40,29 @@ window.showCard = (function () {
     }
   }
 
-  return function (data, callback) {
-    cb = callback;
-    document.addEventListener('keydown', documentKeyDownHandler);
+  return function (data, callback, flag) {
+    if (flag === false) {
+      if (currentCard) {
+        deleteDialogElement();
+        removeListener();
+      }
+      return;
+    }
+    if (typeof (callback) === 'function') {
+      cb = callback;
+    } else {
+      cb = null;
+    }
     if (currentCard) {
       closeElement.removeEventListener('click', clickDialogHandler);
       var newCard = renderCard(data);
       cardContainer.replaceChild(newCard, currentCard);
       currentCard = newCard;
-      closeElement = currentCard.querySelector('.dialog__close');
-      addListner();
     } else {
       currentCard = renderCard(data);
-      closeElement = currentCard.querySelector('.dialog__close');
-      addListner();
       cardContainer.appendChild(currentCard);
     }
+    closeElement = currentCard.querySelector('.dialog__close');
+    addListners();
   };
 }());

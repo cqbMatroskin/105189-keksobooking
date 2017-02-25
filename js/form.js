@@ -1,107 +1,109 @@
 'use strict';
 
-var formElement = document.querySelector('.notice__form');
-var inputTitleElement = formElement.querySelector('#title');
-var inputAddressElement = formElement.querySelector('#address');
-var inputPriceElement = formElement.querySelector('#price');
-var roomSelectElement = formElement.querySelector('#room_number');
-var capacitySelectElement = formElement.querySelector('#capacity');
-var timeInSelectElement = formElement.querySelector('#time');
-var timeOutSelectElement = formElement.querySelector('#timeout');
-var typeSelectElement = formElement.querySelector('#type');
+(function () {
+  var formElement = document.querySelector('.notice__form');
+  var inputTitleElement = formElement.querySelector('#title');
+  var inputAddressElement = formElement.querySelector('#address');
+  var inputPriceElement = formElement.querySelector('#price');
+  var roomSelectElement = formElement.querySelector('#room_number');
+  var capacitySelectElement = formElement.querySelector('#capacity');
+  var timeInSelectElement = formElement.querySelector('#time');
+  var timeOutSelectElement = formElement.querySelector('#timeout');
+  var typeSelectElement = formElement.querySelector('#type');
 
-/** массив объектов с парметрами для полей */
-var config = [
-  {
-    element: inputTitleElement,
-    attr: {
-      required: true,
-      maxLength: 100
+  /** массив объектов с парметрами для полей */
+  var config = [
+    {
+      element: inputTitleElement,
+      attr: {
+        required: true,
+        maxLength: 100
+      }
+    },
+    {
+      element: inputPriceElement,
+      attr: {
+        required: true,
+        min: 1000,
+        max: 1000000,
+
+      }
+    },
+    {
+      element: inputAddressElement,
+      attr: {
+        required: true
+      }
     }
-  },
-  {
-    element: inputPriceElement,
-    attr: {
-      required: true,
-      min: 1000,
-      max: 1000000,
+  ];
 
-    }
-  },
-  {
-    element: inputAddressElement,
-    attr: {
-      required: true
-    }
-  }
-];
+  var TitleLength = {
+    MIN_LENGTH: 30,
+  };
 
-var TitleLength = {
-  MIN_LENGTH: 30,
-};
+  var TIME_IN_ARR = ['12', '13', '14'];
+  var TIME_OUT_ARR = ['12', '13', '14'];
+  var QUANTITY_GUESTS = ['0', '3', '3'];
+  var QUANTITY_ROOM = ['1', '2', '100'];
+  var HOUSE_TYPE = ['apartment', 'hovel', 'palace'];
+  var HOUSE_MIN_PRICE = ['1000', '0', '10000'];
 
-var TIME_IN_ARR = ['12', '13', '14'];
-var TIME_OUT_ARR = ['12', '13', '14'];
-var QUANTITY_GUESTS = ['0', '3', '3'];
-var QUANTITY_ROOM = ['1', '2', '100'];
-var HOUSE_TYPE = ['apartment', 'hovel', 'palace'];
-var HOUSE_MIN_PRICE = ['1000', '0', '10000'];
-
-/* добавляет аттрибуты всем полям заданным в массиве */
-function arrToValidate(arrConfig) {
-  var fieldElement;
-  var elementAttr;
-  for (var i = 0; i < arrConfig.length; i++) {
-    fieldElement = arrConfig[i].element;
-    elementAttr = arrConfig[i].attr;
-    for (var key in elementAttr) {
-      if (elementAttr.hasOwnProperty(key)) {
-        fieldElement[key] = elementAttr[key];
+  /* добавляет аттрибуты всем полям заданным в массиве */
+  function arrToValidate(arrConfig) {
+    var fieldElement;
+    var elementAttr;
+    for (var i = 0; i < arrConfig.length; i++) {
+      fieldElement = arrConfig[i].element;
+      elementAttr = arrConfig[i].attr;
+      for (var key in elementAttr) {
+        if (elementAttr.hasOwnProperty(key)) {
+          fieldElement[key] = elementAttr[key];
+        }
       }
     }
   }
-}
 
-/* двусторонняя синхронизация полей */
-function syncValues(element, value) {
-  element.value = value;
-}
-
-/* Одностороння синхронизация значения первого поля с минимальным значением второго */
-function syncValueWithMin(element, value) {
-  element.min = value;
-}
-
-/* валидация поля #title */
-function validateInputTitleHandler() {
-  if (inputTitleElement.value.length < TitleLength.MIN_LENGTH) {
-    inputTitleElement.setCustomValidity(getMinLengthMessage(TitleLength.MIN_LENGTH, inputTitleElement.value.length));
-  } else {
-    inputTitleElement.setCustomValidity('');
+  /* двусторонняя синхронизация полей */
+  function syncValues(element, value) {
+    element.value = value;
   }
-}
 
-/* функция вывода кастомной ошибки */
-function getMinLengthMessage(number, length) {
-  return 'Количество символов не может быть меньше ' + number + '.' + ' Текущая длина ' + length;
-}
+  /* Одностороння синхронизация значения первого поля с минимальным значением второго */
+  function syncValueWithMin(element, value) {
+    element.min = value;
+  }
 
-/* расстановка атрибутов для полей указанных в массиве config */
-arrToValidate(config);
+  /* валидация поля #title */
+  function validateInputTitleHandler() {
+    if (inputTitleElement.value.length < TitleLength.MIN_LENGTH) {
+      inputTitleElement.setCustomValidity(getMinLengthMessage(TitleLength.MIN_LENGTH, inputTitleElement.value.length));
+    } else {
+      inputTitleElement.setCustomValidity('');
+    }
+  }
 
-/* валидация поля заголовка при загрузке страницы */
-validateInputTitleHandler();
+  /* функция вывода кастомной ошибки */
+  function getMinLengthMessage(number, length) {
+    return 'Количество символов не может быть меньше ' + number + '.' + ' Текущая длина ' + length;
+  }
 
-/* валидация поля заголовка при изменении */
-inputTitleElement.addEventListener('input', validateInputTitleHandler);
+  /* расстановка атрибутов для полей указанных в массиве config */
+  arrToValidate(config);
 
-/* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
-window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, syncValues);
-window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, syncValues);
+  /* валидация поля заголовка при загрузке страницы */
+  validateInputTitleHandler();
 
-/* синхронизация полей выбора времени заезда/выезда */
-window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, syncValues);
-window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, syncValues);
+  /* валидация поля заголовка при изменении */
+  inputTitleElement.addEventListener('input', validateInputTitleHandler);
 
-/* синхронизация поля типа жилья с полем цены */
-window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, syncValueWithMin);
+  /* синхронизация полей выбора кол-ва комнат и кол-ва мест в комнате */
+  window.synchronizeFields(capacitySelectElement, roomSelectElement, QUANTITY_GUESTS, QUANTITY_ROOM, syncValues);
+  window.synchronizeFields(roomSelectElement, capacitySelectElement, QUANTITY_ROOM, QUANTITY_GUESTS, syncValues);
+
+  /* синхронизация полей выбора времени заезда/выезда */
+  window.synchronizeFields(timeInSelectElement, timeOutSelectElement, TIME_IN_ARR, TIME_OUT_ARR, syncValues);
+  window.synchronizeFields(timeOutSelectElement, timeInSelectElement, TIME_OUT_ARR, TIME_IN_ARR, syncValues);
+
+  /* синхронизация поля типа жилья с полем цены */
+  window.synchronizeFields(typeSelectElement, inputPriceElement, HOUSE_TYPE, HOUSE_MIN_PRICE, syncValueWithMin);
+}());
