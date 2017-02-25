@@ -4,11 +4,13 @@
   var pinsMapElement = document.querySelector('.tokyo__pin-map');
   var pinActive = pinsMapElement.querySelector('.pin--active');
   var errorElement = document.querySelector('.error');
+  var featuresFeilters = document.querySelector('.tokyo__filters');
   var similarApartments = [];
   var showCard = window.showCard;
   var utils = window.utils;
   var load = window.load;
   var renderPin = window.renderPin;
+  var filter = window.filterPins;
 
   var DATA_URL = 'https://intensive-javascript-server-pedmyactpq.now.sh/keksobooking/data';
 
@@ -43,25 +45,43 @@
     pinActive.setAttribute('aria-checked', true);
   }
 
-  /* сохраняет в массив первые три индекса */
-  function onDataLoad(data) {
-    similarApartments = data;
-    similarApartments.slice(0, 3).forEach(function (pinData) {
-      var newPin = renderPin(pinData);
-      newPin.style.top = pinData.location.y - PinSize.HEIGHT / 2 + 'px';
-      newPin.style.left = pinData.location.x - PinSize.WIDTH / 2 + 'px';
+  function clearMapElement() {
+    pinsMapElement.innerHTML = '';
+  }
+
+  /* отрисовывает пины */
+  function renderPins(pinsData) {
+    var fragment = document.createDocumentFragment();
+    pinsData.forEach(function (pinItem) {
+      var newPin = renderPin(pinItem);
+      newPin.style.top = pinItem.location.y - PinSize.HEIGHT / 2 + 'px';
+      newPin.style.left = pinItem.location.x - PinSize.WIDTH / 2 + 'px';
       newPin.addEventListener('keydown', function (evt) {
         if (evt.keyCode === utils.KeyCodes.ENTER) {
           selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
-          showCard(pinData, focusPin);
+          showCard(pinItem, focusPin);
         }
       });
       newPin.addEventListener('click', function (evt) {
         selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
-        showCard(pinData);
+        showCard(pinItem);
       });
-      pinsMapElement.appendChild(newPin);
+      fragment.appendChild(newPin);
     });
+    pinsMapElement.appendChild(fragment);
+  }
+
+  /* отлавливаем изменения в форме */
+  featuresFeilters.addEventListener('change', function () {
+    clearMapElement();
+    var filterPins = filter(similarApartments);
+    renderPins(filterPins);
+  });
+
+  /* показывает первые три пина при загрузке */
+  function onDataLoad(data) {
+    similarApartments = data;
+    renderPins(similarApartments.slice(0, 3));
   }
 
   /* выводит ошибку на экран */
