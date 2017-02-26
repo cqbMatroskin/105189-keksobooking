@@ -50,12 +50,15 @@ window.filterPins = (function () {
 
   /* проверяет выбранные чекбоксы features c массивом значений features */
   function checkHousingFeatures(features) {
-    for (var i = 0; i < formFeatureList.length; i++) {
-      if (formFeatureList[i].checked && features.indexOf(formFeatureList[i].value) === -1) {
+    var futureArr = Array.prototype.slice.call(formFeatureList);
+    return futureArr.every(function (formFeatureItem) {
+      var isChecked = formFeatureItem.checked;
+      var featureValue = formFeatureItem.value;
+      if (isChecked && features.indexOf(featureValue) === -1) {
         return false;
       }
-    }
-    return true;
+      return true;
+    });
   }
 
   return function (pinsDataList) {

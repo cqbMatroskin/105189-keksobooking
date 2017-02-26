@@ -55,11 +55,9 @@
     for (var i = 0; i < arrConfig.length; i++) {
       fieldElement = arrConfig[i].element;
       elementAttr = arrConfig[i].attr;
-      for (var key in elementAttr) {
-        if (elementAttr.hasOwnProperty(key)) {
-          fieldElement[key] = elementAttr[key];
-        }
-      }
+      Object.keys(elementAttr).forEach(function (key) {
+        fieldElement[key] = elementAttr[key];
+      });
     }
   }
 

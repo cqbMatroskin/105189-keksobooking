@@ -48,11 +48,7 @@ window.showCard = (function () {
       }
       return;
     }
-    if (typeof (callback) === 'function') {
-      cb = callback;
-    } else {
-      cb = null;
-    }
+    cb = callback === 'function' ? callback : null;
     if (currentCard) {
       closeElement.removeEventListener('click', clickDialogHandler);
       var newCard = renderCard(data);
