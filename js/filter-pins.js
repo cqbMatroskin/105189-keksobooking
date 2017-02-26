@@ -50,8 +50,8 @@ window.filterPins = (function () {
 
   /* проверяет выбранные чекбоксы features c массивом значений features */
   function checkHousingFeatures(features) {
-    var futureArr = Array.prototype.slice.call(formFeatureList);
-    return futureArr.every(function (formFeatureItem) {
+    var featureArr = Array.prototype.slice.call(formFeatureList);
+    return featureArr.every(function (formFeatureItem) {
       var isChecked = formFeatureItem.checked;
       var featureValue = formFeatureItem.value;
       if (isChecked && features.indexOf(featureValue) === -1) {
