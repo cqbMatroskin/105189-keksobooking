@@ -34,7 +34,7 @@ window.showCard = (function () {
 
   /* закрывает диалоговое окно при нажатии Esc */
   function documentKeyDownHandler(evt) {
-    if (evt.keyCode === window.utils.KeyCodes.ESCAPE) {
+    if (evt.keyCode === window.utils.keyCodes.ESCAPE) {
       deleteDialogElement();
       removeListener();
     }

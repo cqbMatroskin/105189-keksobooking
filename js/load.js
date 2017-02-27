@@ -5,7 +5,7 @@ window.load = (function () {
     return err;
   };
 
-  var StatusCode = {
+  var statusCode = {
     ERROR_CLIENT_SIDE: 400,
     ERROR_SERVER_SIDE: 500,
     SUCCESS: 200
@@ -19,11 +19,11 @@ window.load = (function () {
     }
 
     request.addEventListener('load', function (evt) {
-      if (evt.target.status >= StatusCode.ERROR_CLIENT_SIDE) {
+      if (evt.target.status >= statusCode.ERROR_CLIENT_SIDE) {
         errorHandler('Ошибка загрузки данных на стороне клиента. Код ошибки: ' + evt.target.status);
-      } else if (evt.target.status >= StatusCode.ERROR_SERVER_SIDE) {
+      } else if (evt.target.status >= statusCode.ERROR_SERVER_SIDE) {
         errorHandler('Ошибка на стороне сервера. Код ошибки ' + evt.target.response);
-      } else if (evt.target.status >= StatusCode.SUCCESS) {
+      } else if (evt.target.status >= statusCode.SUCCESS) {
         onLoad(evt.target.response);
       }
     });

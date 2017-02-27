@@ -9,12 +9,12 @@ window.filterPins = (function () {
   var formFeatureList = filtersFormElement.feature;
   var SELECT_FILTER_ANY = 'any';
 
-  var HousePrice = {
+  var housePrice = {
     LOW: 10000,
     HIGHT: 50000
   };
 
-  var HousePriceValue = {
+  var housePriceValue = {
     LOW: 'low',
     MIDDLE: 'middle',
     HIGHT: 'high'
@@ -36,14 +36,14 @@ window.filterPins = (function () {
   }
 
   /* проверяет совадение цены за жилье со значением в offers.price */
-  function checkHousePrice(price) {
+  function checkhousePrice(price) {
     switch (housingPriceElement.value) {
-      case (HousePriceValue.MIDDLE):
-        return price >= HousePrice.LOW && price <= HousePrice.HIGHT;
-      case (HousePriceValue.LOW):
-        return price <= HousePrice.LOW;
-      case (HousePriceValue.HIGHT):
-        return price >= HousePrice.HIGHT;
+      case (housePriceValue.MIDDLE):
+        return price >= housePrice.LOW && price <= housePrice.HIGHT;
+      case (housePriceValue.LOW):
+        return price <= housePrice.LOW;
+      case (housePriceValue.HIGHT):
+        return price >= housePrice.HIGHT;
     }
     return false;
   }
@@ -67,7 +67,7 @@ window.filterPins = (function () {
              checkHouseRooms(pinData.offer.rooms) &&
              checkHouseGuets(pinData.offer.guests) &&
              checkHousingFeatures(pinData.offer.features) &&
-             checkHousePrice(pinData.offer.price);
+             checkhousePrice(pinData.offer.price);
     });
   };
 }());
