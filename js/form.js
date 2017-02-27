@@ -37,7 +37,7 @@
     }
   ];
 
-  var TitleLength = {
+  var titleLength = {
     MIN_LENGTH: 30,
   };
 
@@ -73,8 +73,8 @@
 
   /* валидация поля #title */
   function validateInputTitleHandler() {
-    if (inputTitleElement.value.length < TitleLength.MIN_LENGTH) {
-      inputTitleElement.setCustomValidity(getMinLengthMessage(TitleLength.MIN_LENGTH, inputTitleElement.value.length));
+    if (inputTitleElement.value.length < titleLength.MIN_LENGTH) {
+      inputTitleElement.setCustomValidity(getMinLengthMessage(titleLength.MIN_LENGTH, inputTitleElement.value.length));
     } else {
       inputTitleElement.setCustomValidity('');
     }

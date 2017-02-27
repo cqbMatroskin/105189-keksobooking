@@ -6,7 +6,7 @@ window.filterPins = (function () {
   var housingRoomsElement = filtersFormElement.querySelector('#housing_room-number');
   var housingGuestsElement = filtersFormElement.querySelector('#housing_guests-number');
   var housingPriceElement = filtersFormElement.querySelector('#housing_price');
-  var formFeatureList = filtersFormElement.feature;
+  var formFeatureListElement = filtersFormElement.feature;
   var SELECT_FILTER_ANY = 'any';
 
   var housePrice = {
@@ -36,7 +36,7 @@ window.filterPins = (function () {
   }
 
   /* проверяет совадение цены за жилье со значением в offers.price */
-  function checkhousePrice(price) {
+  function checkHousePrice(price) {
     switch (housingPriceElement.value) {
       case (housePriceValue.MIDDLE):
         return price >= housePrice.LOW && price <= housePrice.HIGHT;
@@ -50,10 +50,9 @@ window.filterPins = (function () {
 
   /* проверяет выбранные чекбоксы features c массивом значений features */
   function checkHousingFeatures(features) {
-    var featureArr = Array.prototype.slice.call(formFeatureList);
-    return featureArr.every(function (formFeatureItem) {
-      var isChecked = formFeatureItem.checked;
-      var featureValue = formFeatureItem.value;
+    return Array.prototype.every.call(formFeatureListElement, function (featureElement) {
+      var isChecked = featureElement.checked;
+      var featureValue = featureElement.value;
       if (isChecked && features.indexOf(featureValue) === -1) {
         return false;
       }
@@ -67,7 +66,7 @@ window.filterPins = (function () {
              checkHouseRooms(pinData.offer.rooms) &&
              checkHouseGuets(pinData.offer.guests) &&
              checkHousingFeatures(pinData.offer.features) &&
-             checkhousePrice(pinData.offer.price);
+             checkHousePrice(pinData.offer.price);
     });
   };
 }());
