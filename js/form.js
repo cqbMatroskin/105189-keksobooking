@@ -10,6 +10,7 @@
   var timeInSelectElement = formElement.querySelector('#time');
   var timeOutSelectElement = formElement.querySelector('#timeout');
   var typeSelectElement = formElement.querySelector('#type');
+  var MIN_TITLE_LENGTH = 30;
 
   /** массив объектов с парметрами для полей */
   var config = [
@@ -37,10 +38,6 @@
     }
   ];
 
-  var titleLength = {
-    MIN_LENGTH: 30,
-  };
-
   var TIME_IN_ARR = ['12', '13', '14'];
   var TIME_OUT_ARR = ['12', '13', '14'];
   var QUANTITY_GUESTS = ['0', '3', '3'];
@@ -52,13 +49,13 @@
   function arrToValidate(arrConfig) {
     var fieldElement;
     var elementAttr;
-    for (var i = 0; i < arrConfig.length; i++) {
-      fieldElement = arrConfig[i].element;
-      elementAttr = arrConfig[i].attr;
+    arrConfig.forEach(function (fieldConfig) {
+      fieldElement = fieldConfig.element;
+      elementAttr = fieldConfig.attr;
       Object.keys(elementAttr).forEach(function (key) {
         fieldElement[key] = elementAttr[key];
       });
-    }
+    });
   }
 
   /* двусторонняя синхронизация полей */
@@ -73,8 +70,8 @@
 
   /* валидация поля #title */
   function validateInputTitleHandler() {
-    if (inputTitleElement.value.length < titleLength.MIN_LENGTH) {
-      inputTitleElement.setCustomValidity(getMinLengthMessage(titleLength.MIN_LENGTH, inputTitleElement.value.length));
+    if (inputTitleElement.value.length < MIN_TITLE_LENGTH) {
+      inputTitleElement.setCustomValidity(getMinLengthMessage(MIN_TITLE_LENGTH, inputTitleElement.value.length));
     } else {
       inputTitleElement.setCustomValidity('');
     }
