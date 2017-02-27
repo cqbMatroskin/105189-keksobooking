@@ -53,10 +53,8 @@ window.filterPins = (function () {
     return Array.prototype.every.call(formFeatureListElement, function (featureElement) {
       var isChecked = featureElement.checked;
       var featureValue = featureElement.value;
-      if (isChecked && features.indexOf(featureValue) === -1) {
-        return false;
-      }
-      return true;
+      var flag = isChecked && features.indexOf(featureValue) === -1;
+      return !flag;
     });
   }
 
