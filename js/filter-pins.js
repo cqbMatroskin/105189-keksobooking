@@ -6,15 +6,15 @@ window.filterPins = (function () {
   var housingRoomsElement = filtersFormElement.querySelector('#housing_room-number');
   var housingGuestsElement = filtersFormElement.querySelector('#housing_guests-number');
   var housingPriceElement = filtersFormElement.querySelector('#housing_price');
-  var formFeatureList = filtersFormElement.feature;
+  var formFeatureListElement = filtersFormElement.feature;
   var SELECT_FILTER_ANY = 'any';
 
-  var HousePrice = {
+  var housePrice = {
     LOW: 10000,
     HIGHT: 50000
   };
 
-  var HousePriceValue = {
+  var housePriceValue = {
     LOW: 'low',
     MIDDLE: 'middle',
     HIGHT: 'high'
@@ -38,24 +38,23 @@ window.filterPins = (function () {
   /* проверяет совадение цены за жилье со значением в offers.price */
   function checkHousePrice(price) {
     switch (housingPriceElement.value) {
-      case (HousePriceValue.MIDDLE):
-        return price >= HousePrice.LOW && price <= HousePrice.HIGHT;
-      case (HousePriceValue.LOW):
-        return price <= HousePrice.LOW;
-      case (HousePriceValue.HIGHT):
-        return price >= HousePrice.HIGHT;
+      case (housePriceValue.MIDDLE):
+        return price >= housePrice.LOW && price <= housePrice.HIGHT;
+      case (housePriceValue.LOW):
+        return price <= housePrice.LOW;
+      case (housePriceValue.HIGHT):
+        return price >= housePrice.HIGHT;
     }
     return false;
   }
 
   /* проверяет выбранные чекбоксы features c массивом значений features */
   function checkHousingFeatures(features) {
-    for (var i = 0; i < formFeatureList.length; i++) {
-      if (formFeatureList[i].checked && features.indexOf(formFeatureList[i].value) === -1) {
-        return false;
-      }
-    }
-    return true;
+    return Array.prototype.every.call(formFeatureListElement, function (featureElement) {
+      var isChecked = featureElement.checked;
+      var featureValue = featureElement.value;
+      return !(isChecked && features.indexOf(featureValue) === -1);
+    });
   }
 
   return function (pinsDataList) {

@@ -34,7 +34,7 @@ window.showCard = (function () {
 
   /* закрывает диалоговое окно при нажатии Esc */
   function documentKeyDownHandler(evt) {
-    if (evt.keyCode === window.utils.KeyCodes.ESCAPE) {
+    if (evt.keyCode === window.utils.keyCodes.ESCAPE) {
       deleteDialogElement();
       removeListener();
     }
@@ -48,11 +48,7 @@ window.showCard = (function () {
       }
       return;
     }
-    if (typeof (callback) === 'function') {
-      cb = callback;
-    } else {
-      cb = null;
-    }
+    cb = typeof callback === 'function' ? callback : null;
     if (currentCard) {
       closeElement.removeEventListener('click', clickDialogHandler);
       var newCard = renderCard(data);

@@ -1,7 +1,7 @@
 'use strict';
 
 window.utils = (function () {
-  var KeyCodes = {
+  var keyCodes = {
     ENTER: 13,
     ESCAPE: 27
   };
@@ -31,7 +31,7 @@ window.utils = (function () {
   selectorMatches();
 
   return {
-    KeyCodes: KeyCodes,
+    keyCodes: keyCodes,
     getClosestElement: getClosestElement,
   };
 }());

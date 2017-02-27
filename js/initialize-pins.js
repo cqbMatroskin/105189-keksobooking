@@ -15,13 +15,13 @@
 
   var DATA_URL = 'https://intensive-javascript-server-pedmyactpq.now.sh/keksobooking/data';
 
-  var ClassName = {
+  var className = {
     INVISIBLE: 'invisible',
     PIN_ACTIVE: 'pin--active',
     PIN: 'pin'
   };
 
-  var PinSize = {
+  var pinSize = {
     WIDTH: 56,
     HEIGHT: 75
   };
@@ -38,11 +38,11 @@
    */
   function selectPin(target) {
     if (pinActive) {
-      pinActive.classList.remove(ClassName.PIN_ACTIVE);
+      pinActive.classList.remove(className.PIN_ACTIVE);
       pinActive.setAttribute('aria-checked', false);
     }
     pinActive = target;
-    pinActive.classList.add(ClassName.PIN_ACTIVE);
+    pinActive.classList.add(className.PIN_ACTIVE);
     pinActive.setAttribute('aria-checked', true);
   }
 
@@ -61,16 +61,16 @@
     pinsDataList.forEach(function (pinData) {
       var newPin = renderPin(pinData);
       currentPins.push(newPin);
-      newPin.style.top = pinData.location.y - PinSize.HEIGHT + 'px';
-      newPin.style.left = pinData.location.x - PinSize.WIDTH / 2 + 'px';
+      newPin.style.top = pinData.location.y - pinSize.HEIGHT + 'px';
+      newPin.style.left = pinData.location.x - pinSize.WIDTH / 2 + 'px';
       newPin.addEventListener('keydown', function (evt) {
-        if (evt.keyCode === utils.KeyCodes.ENTER) {
-          selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
+        if (evt.keyCode === utils.keyCodes.ENTER) {
+          selectPin(utils.getClosestElement(evt.target, '.' + className.PIN));
           showCard(pinData, focusPin);
         }
       });
       newPin.addEventListener('click', function (evt) {
-        selectPin(utils.getClosestElement(evt.target, '.' + ClassName.PIN));
+        selectPin(utils.getClosestElement(evt.target, '.' + className.PIN));
         showCard(pinData);
       });
       fragment.appendChild(newPin);
